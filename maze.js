@@ -5,22 +5,24 @@ const createMaze = ({
     height,
 })=>{
     // module aliases
-    var Engine = Matter.Engine,
+    
+    let Engine = Matter.Engine,
         Render = Matter.Render,
         World = Matter.World,
         Runner = Matter.Runner,
         Bodies = Matter.Bodies,
         Body = Matter.Body,
-        Events = Matter.Events;
-    
-    const columns = Math.floor(width/100 * difficulty);
-    const rows = Math.floor(height/100 * difficulty);
+        Events = Matter.Events
+     
+    const columns = Math.round(width/100 * difficulty);
+    const rows = Math.round(height/100 * difficulty);
     const unitWidth = width/columns;
     const unitHeight = height/rows;
     const unitThickness = 100/rows;
     const friction = 0.1406;
     const speed = 10*(10/rows) * (width/600) * (rows/columns);
-    
+    const hue = Math.floor(Math.random()*300)
+
     // create an engine
     var engine = Engine.create();
     const world = engine.world;
@@ -32,18 +34,20 @@ const createMaze = ({
             wireframes:false,
             width:width,
             height:height,
+            background: 'hsl('+hue+',40%,10%)'
         }
     });
+    
     //walls -------------
     const walls =[
         //bottom
-        Bodies.rectangle(width/2, height, width, unitThickness, { isStatic: true, render:{fillStyle: 'hsl(200,40%,40%)'}}),
+        Bodies.rectangle(width/2, height, width, unitThickness, { isStatic: true, render:{fillStyle: 'hsl('+hue+',40%,40%)'}}),
         //left
-        Bodies.rectangle(0, height/2, unitThickness, height,  { isStatic: true, render:{fillStyle: 'hsl(200,40%,40%)'}}),
+        Bodies.rectangle(0, height/2, unitThickness, height,  { isStatic: true, render:{fillStyle: 'hsl('+hue+',40%,40%)'}}),
         //right
-        Bodies.rectangle(width,height/2, unitThickness,height,  { isStatic: true, render:{fillStyle: 'hsl(200,40%,40%)'}}),
+        Bodies.rectangle(width,height/2, unitThickness,height,  { isStatic: true, render:{fillStyle: 'hsl('+hue+',40%,40%)'}}),
         //top
-        Bodies.rectangle(width/2,0,width, unitThickness,  { isStatic: true, render:{fillStyle: 'hsl(200,40%,40%)'}})]
+        Bodies.rectangle(width/2,0,width, unitThickness,  { isStatic: true, render:{fillStyle: 'hsl('+hue+',40%,40%)'}})]
         
     // add all of the bodies to the world
     World.add(world, walls);
@@ -147,7 +151,7 @@ const createMaze = ({
                 label:'wall',
                 slop:0.5,
                 render: {
-                    fillStyle: 'hsl(200,40%,40%)'
+                    fillStyle: 'hsl('+hue+',40%,40%)'
                 }
                 }
             )
@@ -168,7 +172,7 @@ const createMaze = ({
                 label:'wall',
                 slop:0.5,
                     render: {
-                        fillStyle: 'hsl(200,40%,40%)'
+                        fillStyle: 'hsl('+hue+',40%,40%)'
                     }
                     }
             )
@@ -176,8 +180,8 @@ const createMaze = ({
         })
     })
     
-    for(let x = 0; x < columns; x++){
-        for (let y = 0; y < rows; y++) {
+    for(let x = 0; x < columns +1; x++){
+        for (let y = 0; y < rows + 1; y++) {
             const nub = Bodies.rectangle(
                 unitWidth * x,
                 unitHeight * y,
@@ -188,7 +192,7 @@ const createMaze = ({
                 friction:0,
                 slop:0.5,
                 render: {
-                    fillStyle: 'hsl(200,40%,30%)'
+                    fillStyle: 'hsl('+hue+',40%,30%)'
                 }}
             )
             World.add(world,nub)
@@ -203,7 +207,7 @@ const createMaze = ({
         {isStatic:true,
         label:'goal',
         render: {
-                fillStyle: 'hsl(100,40%,40%)'
+            fillStyle: 'hsl('+(hue+170)+',80%,40%)'
             }
         }
     )
@@ -223,7 +227,7 @@ const createMaze = ({
         density:1,
         label:'player',
         render: {
-                fillStyle: 'hsl(250,40%,40%)'
+                fillStyle: 'hsl('+hue+',80%,40%)'
             },
         }
     )
@@ -233,7 +237,6 @@ const createMaze = ({
     Events.on(engine, 'collisionStart', event => {
         event.pairs.forEach (collision => {
             const labels = ['player', 'goal'];
-    
             if (labels.includes(collision.bodyA.label) && labels.includes(collision.bodyB.label)){
                 world.gravity.y = 1;
                 world.bodies.forEach(body => {
@@ -241,17 +244,24 @@ const createMaze = ({
                         Body.setStatic(body, false);
                     }
                 })
-                World.clear(world);
-                Engine.clear(engine);
-                Render.stop(render);
-                render.canvas.remove();
-                render.canvas = null;
-                render.context = null;
+                worldClear(world,engine,render);
                 win();
 
             }
         })
     })
+
+    
+
+    const worldClear = (world,engine,render) =>{
+        World.clear(world);
+        Engine.clear(engine);
+        Render.stop(render);
+        render.canvas.remove();
+        render.canvas = null;
+        render.context = null;
+    }
+
     
     document.addEventListener('keydown', (event) =>{
         const {x,y} = player.velocity;

@@ -1,8 +1,11 @@
 body{
     margin:0;
-    overflow: hidden;
 }
 #game{
     height: 600px;
-    width: 600px;
+    width: 100%;
+}
+#demo{
+    height: 200px;
+    width: 200px;
 }
