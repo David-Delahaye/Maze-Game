@@ -1,8 +1,11 @@
 let game = document.querySelector('#game');
 let levelDisplay = document.querySelector('#level');
 let coinDisplay = document.querySelector('#coins');
-let level = 100;
+let winDisplay = document.querySelector('.win');
+let nextLevelInput = document.querySelector('#next-level')
+let level = 1;
 let coins = 0;
+
 
 const update = () => {
 levelDisplay.innerHTML = 'Level: ' + level;
@@ -22,10 +25,16 @@ createMaze({
 }
 
 const win = () => {
+    winDisplay.classList.remove('hidden');
+}
+
+nextLevelInput.addEventListener('click', ()=>{
+    worldClear();
+    winDisplay.classList.add('hidden');
     level++
     newLevel('win');
     update();
-}
+})
 
 const coinPickup = () => {
     coins++;

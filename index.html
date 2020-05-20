@@ -4,12 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
     <div id="game"></div>
+    <div id="score-bar">
     <p id="level"></p>
     <p id="coins"></p>
+    </div>
+    <div class="win hidden">
+        <h1>Well done</h1>
+        <button id="next-level">Next level</button>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.14.2/matter.js"></script>
     <script src="helpers.js"></script>
     <script src="maze.js"></script>

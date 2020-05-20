@@ -12,7 +12,7 @@ const worldBuild = (root,difficulty,width,height) =>{
     rows = Math.round(height/200 * difficulty),
     unitWidth = width/columns,
     unitHeight = height/rows,
-    unitThickness = 100/rows,
+    unitThickness = 200/rows,
     friction = 0.2812,
     speedx = (58.6*width/600) * (4/columns),
     speedy = (58.6*height/600) * (4/rows),
@@ -35,6 +35,7 @@ const worldBuild = (root,difficulty,width,height) =>{
     Runner.run(Runner.create(),engine);
     Render.run(render);
     engine.world.gravity.y = 0;
+    document.body.style.backgroundColor = 'hsl('+hue+', 40%,30%)'
     
 }
 
@@ -221,7 +222,6 @@ Events.on(engine, 'collisionStart', event => {
             //         Body.setStatic(body, false);
             //     }
             // })
-            worldClear();
             win();
         }
 
@@ -275,7 +275,7 @@ const spritesBuild = (width,height) => {
     )
     World.add(world,player);
 
-    for(let i = 0; i<5;i++){
+    for(let i = 0; i<((rows*columns)/10);i++){
     const coin = Bodies.rectangle(
         (Math.floor(Math.random()*columns) * unitWidth) + unitWidth/2,
         (Math.floor(Math.random()*rows) * unitHeight) + unitHeight/2,
