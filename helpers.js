@@ -13,8 +13,9 @@ const worldBuild = (root,difficulty,width,height) =>{
     unitWidth = width/columns,
     unitHeight = height/rows,
     unitThickness = 100/rows,
-    friction = 0.1406,
-    speed = 10*(10/rows) * (width/600) * (rows/columns),
+    friction = 0.2812,
+    speedx = (58.6*width/600) * (4/columns),
+    speedy = (58.6*height/600) * (4/rows),
     hue = Math.floor(Math.random()*350),
     // create an engine
     engine = Engine.create(),
@@ -143,6 +144,7 @@ const mazeBuild = (width,height) =>{
                 unitThickness,
                 {isStatic:true,
                 label:'wall',
+                friction:0,
                 slop:0.5,
                 render: {
                     fillStyle: 'hsl('+hue+',40%,40%)'
@@ -164,6 +166,7 @@ const mazeBuild = (width,height) =>{
                 unitHeight,
                 {isStatic:true,
                 label:'wall',
+                friction:0,
                 slop:0.5,
                     render: {
                         fillStyle: 'hsl('+hue+',40%,40%)'
@@ -194,7 +197,7 @@ const mazeBuild = (width,height) =>{
     }
 }
 
-const worldClear = (world,engine,render) =>{
+const worldClear = () =>{
     World.clear(world);
     Engine.clear(engine);
     Render.stop(render);
@@ -218,7 +221,7 @@ Events.on(engine, 'collisionStart', event => {
             //         Body.setStatic(body, false);
             //     }
             // })
-            worldClear(world,engine,render);
+            worldClear();
             win();
         }
 
@@ -263,8 +266,7 @@ const spritesBuild = (width,height) => {
         inertia:Infinity,
         frictionAir:friction,
         friction:0,
-        slop:0.5,
-        density:1,
+        slop:0,
         label:'player',
         render: {
                 fillStyle: 'hsl('+hue+',70%,40%)'
@@ -299,19 +301,19 @@ const controlsInit = (Body, player, speed)=>{
         const {x,y} = player.velocity;
         if (event.keyCode === 87){
             // console.log('move player up');
-            Body.setVelocity(player, {x, y:y-speed})
+            Body.setVelocity(player, {x, y:y-speedy})
         }
         if (event.keyCode === 68){
             // console.log('move player right');
-            Body.setVelocity(player, {x:x+speed, y})
+            Body.setVelocity(player, {x:x+speedx, y})
         }
         if (event.keyCode === 83){
             // console.log('move player down');
-            Body.setVelocity(player, {x, y:y+speed})
+            Body.setVelocity(player, {x, y:y+speedy})
         }
         if (event.keyCode === 65){
             // console.log('move player left');
-            Body.setVelocity(player, {x:x-speed, y})
+            Body.setVelocity(player, {x:x-speedx, y})
         }
     })
     }

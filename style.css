@@ -1,9 +1,11 @@
 body{
     margin:0;
+    overflow: hidden;
 }
 #game{
-    height: 900px;
-    width: 100%;
+    height: 90vh;
+    width: 90%;
+    margin: auto;
 }
 #demo{
     height: 200px;
