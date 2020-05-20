@@ -12,7 +12,7 @@ const worldBuild = (root,difficulty,width,height) =>{
     rows = Math.round(height/200 * difficulty),
     unitWidth = width/columns,
     unitHeight = height/rows,
-    unitThickness = 200/rows,
+    unitThickness = 100/rows,
     friction = 0.2812,
     speedx = (58.6*width/600) * (4/columns),
     speedy = (58.6*height/600) * (4/rows),
@@ -168,7 +168,7 @@ const mazeBuild = (width,height) =>{
                 {isStatic:true,
                 label:'wall',
                 friction:0,
-                slop:0.5,
+                slop:0,
                     render: {
                         fillStyle: 'hsl('+hue+',40%,40%)'
                     }
@@ -188,7 +188,7 @@ const mazeBuild = (width,height) =>{
                 {isStatic:true,
                 label:'wall',
                 friction:0,
-                slop:0.5,
+                slop:0,
                 render: {
                     fillStyle: 'hsl('+hue+',40%,30%)'
                 }}
@@ -250,6 +250,7 @@ const spritesBuild = (width,height) => {
         unitHeight - unitThickness,
         {isStatic:true,
         label:'goal',
+        isSensor:true,
         render: {
             fillStyle: 'hsl('+(hue+170)+',70%,40%)'
             }
@@ -297,8 +298,8 @@ const spritesBuild = (width,height) => {
 
    //Controller =================================================================================================================================
 const controlsInit = (Body, player, speed)=>{
+    const {x,y} = player.velocity;
     document.addEventListener('keydown', (event) =>{
-        const {x,y} = player.velocity;
         if (event.keyCode === 87){
             // console.log('move player up');
             Body.setVelocity(player, {x, y:y-speedy})
@@ -316,4 +317,51 @@ const controlsInit = (Body, player, speed)=>{
             Body.setVelocity(player, {x:x-speedx, y})
         }
     })
+
+//TODO ==== REFACTOR NOT MY CODE
+document.addEventListener('touchstart', handleTouchStart, false);        
+document.addEventListener('touchmove', handleTouchMove, false);
+
+var xDown = null;                                                        
+var yDown = null;
+
+function getTouches(evt) {
+  return evt.touches ||             // browser API
+         evt.originalEvent.touches; // jQuery
+}                                                     
+
+function handleTouchStart(evt) {
+    const firstTouch = getTouches(evt)[0];                                      
+    xDown = firstTouch.clientX;                                      
+    yDown = firstTouch.clientY;                                      
+};                                                
+
+function handleTouchMove(evt) {
+    if ( ! xDown || ! yDown ) {
+        return;
+    }
+
+    var xUp = evt.touches[0].clientX;                                    
+    var yUp = evt.touches[0].clientY;
+
+    var xDiff = xDown - xUp;
+    var yDiff = yDown - yUp;
+
+    if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
+        if ( xDiff > 0 ) {
+            Body.setVelocity(player, {x:x-speedx, y})
+        } else {
+            Body.setVelocity(player, {x:x+speedx, y})
+        }                       
+    } else {
+        if ( yDiff > 0 ) {
+            Body.setVelocity(player, {x, y:y-speedy})
+        } else { 
+            Body.setVelocity(player, {x, y:y+speedy})
+        }                                                                 
+    }
+    /* reset values */
+    xDown = null;
+    yDown = null;                                             
+};
     }
