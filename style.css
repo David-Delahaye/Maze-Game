@@ -13,8 +13,16 @@ body{
 }
 #game{
     height: 90vh;
-    width: 100vw;
+    width: 100%;
+
+}
+.container{
+    position: relative;
+    height: 100%;
+    width: 100%;
     margin: auto;
+    max-width: 1200px;
+    max-height: 1000px;
 }
 #score-bar{
     display: flex;
@@ -22,15 +30,17 @@ body{
     align-items: center;
     width: 100%;
     height: 10vh;
-    padding-left: 50px;
+    padding: 10px;
 }
 #coins{
     color:gold;
     font-size: 20px;
+    padding-right: 20px;
 }
 #level{
     color: gold;
     font-size: 20px;
+    padding-right: 20px;
 }
 
 #demo{
@@ -42,19 +52,35 @@ body{
     display: none !important;
 }
 
-.win{
-    color: white;
+.menu{
+    color: gold;
     position: absolute;
-    left:50%;
-    top: 50%;
-    width: 40%;
-    height: 30%;
-    margin-left: -20%;
-    margin-top: -40%;
-    background-color: rgba(0, 0, 0, 0.295);
+    left:20%;
+    top: 20vh;
+    bottom: 30vh;
+    right: 20%;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.473);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 1;
+}
+
+#menu-button{
+    margin-top: 20%;
+    padding: 5%;
+    border-radius: 5%;
+    font-family: 'Fredoka One', cursive;
+    letter-spacing: 2px;
+    color: gold;
+}
+
+@media (max-width: 600px){
+    #score-bar{
+        flex-direction: column;
+        justify-content:start;
+        align-items: start;
+    }
 }

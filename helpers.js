@@ -207,37 +207,6 @@ const worldClear = () =>{
     render.context = null;
 }
 
-//EVENTS BUILD ====================================================================================================================================================
-const eventsBuild = () =>{
-Events.on(engine, 'collisionStart', event => {
-    event.pairs.forEach (collision => {
-        const winLabels = ['player', 'goal'];
-        const coinLabels = ['player', 'coin']
-
-        //Win Condition
-        if (winLabels.includes(collision.bodyA.label) && winLabels.includes(collision.bodyB.label)){
-            // world.gravity.y = 1;
-            // world.bodies.forEach(body => {
-            //     if(body.label === 'wall'){
-            //         Body.setStatic(body, false);
-            //     }
-            // })
-            win();
-        }
-
-        // Coin Pickup
-        if (coinLabels.includes(collision.bodyA.label) && coinLabels.includes(collision.bodyB.label)){
-            if (collision.bodyA.label === 'coin')
-                {World.remove(world,collision.bodyA)}
-            else{
-                {World.remove(world,collision.bodyB)}    
-            }
-            coinPickup();
-        }
-    })
-})
-
-}
 
 
 
@@ -277,11 +246,10 @@ const spritesBuild = (width,height) => {
     World.add(world,player);
 
     for(let i = 0; i<((rows*columns)/10);i++){
-    const coin = Bodies.rectangle(
+    const coin = Bodies.circle(
         (Math.floor(Math.random()*columns) * unitWidth) + unitWidth/2,
         (Math.floor(Math.random()*rows) * unitHeight) + unitHeight/2,
-        (unitWidth/2),
-        (unitHeight/2),
+        (unitWidth/10),
         {
         isStatic:true,
         label:'coin',
@@ -293,9 +261,58 @@ const spritesBuild = (width,height) => {
     )
     World.add(world,coin)
     }
-    return {player,goal}
-   }
 
+    const enemy = Bodies.rectangle(
+        ((Math.floor(Math.random()*columns-1) +1) * unitWidth) + (unitWidth/2),
+        ((Math.floor(Math.random()*rows-1) +1) * unitHeight) + unitHeight,
+        unitWidth-unitThickness,
+        unitThickness,
+        {
+            inertia:Infinity,
+            frictionAir:friction,
+            friction:0,
+            slop:0,
+            isStatic:true,
+            isSensor:true,
+            label:'enemy',
+            render:{
+                fillStyle: 'hsl('+hue+',40%,40%)'
+            }
+        }
+    )
+    World.add(world,enemy);
+    return {player,goal,enemy}
+   }
+//EVENTS BUILD ====================================================================================================================================================
+const eventsBuild = (enemy) =>{
+    Events.on(engine, 'collisionStart', event => {
+        event.pairs.forEach (collision => {
+            const winLabels = ['player', 'goal'];
+            const coinLabels = ['player', 'coin'];
+            const enemyLabels = ['player', 'enemy'];
+    
+            //Win Condition
+            if (winLabels.includes(collision.bodyA.label) && winLabels.includes(collision.bodyB.label)){
+                win();
+            }
+    
+            // Coin Pickup
+            if (coinLabels.includes(collision.bodyA.label) && coinLabels.includes(collision.bodyB.label)){
+                if (collision.bodyA.label === 'coin')
+                    {World.remove(world,collision.bodyA)}
+                else{
+                    {World.remove(world,collision.bodyB)}    
+                }
+                coinPickup();
+            }
+
+            if (enemyLabels.includes(collision.bodyA.label) && enemyLabels.includes(collision.bodyB.label)){
+                enemy.render.opacity = 0.1;
+            }
+        })
+    })
+    
+    }
    //Controller =================================================================================================================================
 const controlsInit = (Body, player, speed)=>{
     const {x,y} = player.velocity;

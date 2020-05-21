@@ -1,8 +1,9 @@
 let game = document.querySelector('#game');
 let levelDisplay = document.querySelector('#level');
 let coinDisplay = document.querySelector('#coins');
-let winDisplay = document.querySelector('.win');
-let nextLevelInput = document.querySelector('#next-level')
+let menu = document.querySelector('.menu');
+let menuHead =document.querySelector('#menu-head')
+let menuButton = document.querySelector('#menu-button');
 let level = 1;
 let coins = 0;
 
@@ -17,7 +18,7 @@ const newLevel = (reason) => {
 console.log(reason);
 createMaze({
     root:game,
-    difficulty:(level*0.02)+1,
+    difficulty:(level*0.02)+1.4,
     width:game.clientWidth,
     height:game.clientHeight,
 
@@ -25,12 +26,13 @@ createMaze({
 }
 
 const win = () => {
-    winDisplay.classList.remove('hidden');
+    menu.classList.remove('hidden');
+    menuButton.style.backgroundColor = 'hsl('+hue+', 40%,30%)'
 }
 
-nextLevelInput.addEventListener('click', ()=>{
+menuButton.addEventListener('click', ()=>{
     worldClear();
-    winDisplay.classList.add('hidden');
+    menu.classList.add('hidden');
     level++
     newLevel('win');
     update();
@@ -59,5 +61,9 @@ const reset = () => {
     newLevel('reset');
 }
 
+menuHead.textContent = 'Maze Game';
+menu.classList.remove('hidden');
+
 window.addEventListener('resize', debounce(reset,1000));
-newLevel();
+
+newLevel('win');
