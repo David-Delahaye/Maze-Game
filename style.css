@@ -5,10 +5,12 @@ body{
     font-family: 'Fredoka One', cursive;
     letter-spacing: 2px;
     overflow: hidden;
+    position: relative;
 }
 
 html{
     height: 100vh;
+    overflow: hidden;
 }
 
 *{
