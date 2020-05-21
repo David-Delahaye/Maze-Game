@@ -1,4 +1,5 @@
 let game = document.querySelector('#game');
+let container = document.querySelector('.container');
 let levelDisplay = document.querySelector('#level');
 let coinDisplay = document.querySelector('#coins');
 let menu = document.querySelector('.menu');
@@ -7,7 +8,6 @@ let menuButton = document.querySelector('#menu-button');
 let level = 1;
 let coins = 0;
 
-
 const update = () => {
 levelDisplay.innerHTML = 'Level: ' + level;
 coinDisplay.innerHTML = 'Coins: '+coins;
@@ -15,6 +15,7 @@ coinDisplay.innerHTML = 'Coins: '+coins;
 update();
 
 const newLevel = (reason) => {
+
 console.log(reason);
 createMaze({
     root:game,
@@ -57,6 +58,8 @@ const debounce = (func,delay) =>{
 
 
 const reset = () => {
+    container.style.width = window.innerWidth + 'px';
+    container.style.height = window.innerHeight + 'px';
     worldClear();
     newLevel('reset');
 }
@@ -66,4 +69,6 @@ menu.classList.remove('hidden');
 
 window.addEventListener('resize', debounce(reset,1000));
 
+container.style.width = window.innerWidth + 'px';
+container.style.height = window.innerHeight + 'px';
 newLevel('win');

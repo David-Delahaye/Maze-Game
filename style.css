@@ -6,20 +6,22 @@ body{
     letter-spacing: 2px;
 }
 
+html{
+    height: 100vh;
+}
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 #game{
-    height: 90vh;
+    height: 90%;
     width: 100%;
 
 }
 .container{
     position: relative;
-    height: 100%;
-    width: 100%;
     margin: auto;
     max-width: 1200px;
     max-height: 1000px;
@@ -55,12 +57,12 @@ body{
 .menu{
     color: gold;
     position: absolute;
-    left:20%;
-    top: 20vh;
-    bottom: 30vh;
-    right: 20%;
+    left:15%;
+    top: 30vh;
+    bottom: 40vh;
+    right: 15%;
     text-align: center;
-    background-color: rgba(0, 0, 0, 0.473);
+    background-color: rgba(0, 0, 0, 0.644);
     display: flex;
     flex-direction: column;
     justify-content: center;
