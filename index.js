@@ -68,6 +68,15 @@ menuHead.textContent = 'Maze Game';
 menu.classList.remove('hidden');
 
 window.addEventListener('resize', debounce(reset,1000));
+window.addEventListener("scroll", preventMotion, false);
+window.addEventListener("touchmove", preventMotion, false);
+
+function preventMotion(event)
+{
+    window.scrollTo(0, 0);
+    event.preventDefault();
+    event.stopPropagation();
+}
 
 container.style.width = window.innerWidth + 'px';
 container.style.height = window.innerHeight + 'px';
