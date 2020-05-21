@@ -10,7 +10,7 @@ let coins = 0;
 
 const update = () => {
 levelDisplay.innerHTML = 'Level: ' + level;
-coinDisplay.innerHTML = 'Coins: '+coins;
+coinDisplay.innerHTML = 'Coins: '+ coins;
 }
 update();
 
@@ -28,6 +28,7 @@ createMaze({
 
 const win = () => {
     menu.classList.remove('hidden');
+    menuHead.textContent = 'Level ' + level + ' Complete';
     menuButton.style.backgroundColor = 'hsl('+hue+', 40%,30%)'
 }
 
@@ -57,17 +58,18 @@ const debounce = (func,delay) =>{
 }
 
 
+// Screen Refresh & scroll stop
 const reset = () => {
-    container.style.width = window.innerWidth + 'px';
-    container.style.height = window.innerHeight + 'px';
+    // container.style.width = window.innerWidth + 'px';
+    // container.style.height = window.innerHeight + 'px';
     worldClear();
     newLevel('reset');
 }
-
-menuHead.textContent = 'Maze Game';
-menu.classList.remove('hidden');
-
 window.addEventListener('resize', debounce(reset,1000));
+
+
+
+//stop scrolling
 window.addEventListener("scroll", preventMotion, {passive: false});
 window.addEventListener("touchmove", preventMotion,  {passive: false});
 
@@ -78,6 +80,9 @@ function preventMotion(event)
     event.stopPropagation();
 }
 
-container.style.width = window.innerWidth + 'px';
-container.style.height = window.innerHeight + 'px';
-newLevel('win');
+// container.style.width = window.innerWidth + 'px';
+// container.style.height = window.innerHeight + 'px';
+
+menuHead.textContent = 'Maze Game';
+menu.classList.remove('hidden');
+newLevel('start');
