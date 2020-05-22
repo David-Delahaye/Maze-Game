@@ -8,14 +8,15 @@ const worldBuild = (root,difficulty,width,height) =>{
     Body = Matter.Body,
     Bounds = Matter.Bounds,
     Events = Matter.Events,
+    Vector = Matter.Vector,
     columns = Math.round(width/200 * difficulty),
     rows = Math.round(height/200 * difficulty),
     unitWidth = width/columns,
     unitHeight = height/rows,
     unitThickness = 100/rows,
-    friction = 0.2812,
-    speedx = (58.6*width/600) * (4/columns),
-    speedy = (58.6*height/600) * (4/rows),
+    friction = 0.25,
+    speedx = (50*width/600) * (4/columns),
+    speedy = (50*height/600) * (4/rows),
     hue = Math.floor(Math.random()*350),
     // create an engine
     engine = Engine.create(),
@@ -41,8 +42,9 @@ const worldBuild = (root,difficulty,width,height) =>{
 
 //Maze Gen-----------------------------------------------------------------------------------------
 const mazeBuild = (width,height) =>{
+    const walls = [];
     //walls -------------
-    const walls =[
+    const edges=[
         //bottom
         Bodies.rectangle(width/2, height, width, unitThickness, { isStatic: true, render:{fillStyle: 'hsl('+hue+',40%,40%)'}}),
         //left
@@ -53,7 +55,7 @@ const mazeBuild = (width,height) =>{
         Bodies.rectangle(width/2,0,width, unitThickness,  { isStatic: true, render:{fillStyle: 'hsl('+hue+',40%,40%)'}})]
         
     // add walls
-    World.add(world, walls);
+    World.add(world, edges);
     
     //maze Generation ---------------
     const grid = Array(rows)
@@ -145,14 +147,15 @@ const mazeBuild = (width,height) =>{
                 unitThickness,
                 {isStatic:true,
                 label:'wall',
+                slop:0,
                 friction:0,
-                slop:0.5,
                 render: {
                     fillStyle: 'hsl('+hue+',40%,40%)'
                 }
                 }
             )
             World.add(world, wall);
+            walls.push(wall);
         })
     })
     verticals.forEach((row, rowIndex)=>{
@@ -169,12 +172,14 @@ const mazeBuild = (width,height) =>{
                 label:'wall',
                 friction:0,
                 slop:0,
+                density:1,
                     render: {
                         fillStyle: 'hsl('+hue+',40%,40%)'
                     }
                     }
             )
             World.add(world, wall);
+            walls.push(wall);
         })
     })
     
@@ -189,6 +194,7 @@ const mazeBuild = (width,height) =>{
                 label:'wall',
                 friction:0,
                 slop:0,
+                density:1,
                 render: {
                     fillStyle: 'hsl('+hue+',40%,30%)'
                 }}
@@ -196,6 +202,7 @@ const mazeBuild = (width,height) =>{
             World.add(world,nub)
         }
     }
+    return walls;
 }
 
 const worldClear = () =>{
@@ -206,7 +213,6 @@ const worldClear = () =>{
     render.canvas = null;
     render.context = null;
 }
-
 
 
 
@@ -235,6 +241,7 @@ const spritesBuild = (width,height) => {
         {
         inertia:Infinity,
         frictionAir:friction,
+        frictionStatic:40,
         friction:0,
         slop:0,
         label:'player',
@@ -262,29 +269,58 @@ const spritesBuild = (width,height) => {
     World.add(world,coin)
     }
 
-    const enemy = Bodies.rectangle(
-        ((Math.floor(Math.random()*columns-1) +1) * unitWidth) + (unitWidth/2),
-        ((Math.floor(Math.random()*rows-1) +1) * unitHeight) + unitHeight,
-        unitWidth-unitThickness,
-        unitThickness,
-        {
-            inertia:Infinity,
-            frictionAir:friction,
-            friction:0,
-            slop:0,
-            isStatic:true,
-            isSensor:true,
-            label:'enemy',
-            render:{
-                fillStyle: 'hsl('+hue+',40%,40%)'
-            }
+    let enemies = [];
+    for (let i = 0; i < 2; i++) {
+        const sideways = Math.random();
+        if (sideways > 0.5){
+        const enemy = Bodies.rectangle(
+            ((Math.floor(Math.random()*columns-1) +1) * unitWidth) + (unitWidth/2),
+            ((Math.floor(Math.random()*rows-1) +1) * unitHeight) + unitHeight,
+            unitWidth- unitThickness,
+            unitThickness,
+            {
+                inertia:Infinity,
+                frictionAir:friction,
+                friction:0,
+                slop:0,
+                isStatic:true,
+                isSensor:true,
+                label:'enemy',
+                render:{
+                    fillStyle: 'hsl('+hue+',40%,90%)'
+                }
+            })
+        World.add(world,enemy);
+        enemies.push(enemy);
+        }else{
+        const enemy = Bodies.rectangle(
+            ((Math.floor(Math.random()*columns-1) +1) * unitWidth) + unitWidth,
+            ((Math.floor(Math.random()*rows-1) +1) * unitHeight) + (unitHeight/2),
+            unitThickness,
+            unitHeight - unitThickness,
+            {
+                inertia:Infinity,
+                frictionAir:friction,
+                friction:0,
+                slop:0,
+                isStatic:true,
+                isSensor:true,
+                label:'enemy',
+                render:{
+                    fillStyle: 'hsl('+hue+',40%,90%)'
+                }
+            })
+            World.add(world,enemy);
+            enemies.push(enemy);
         }
-    )
-    World.add(world,enemy);
-    return {player,goal,enemy}
+
+
+    }
+
+    return {player,goal,enemies}
    }
 //EVENTS BUILD ====================================================================================================================================================
-const eventsBuild = (enemy) =>{
+const eventsBuild = (enemies) =>{
     Events.on(engine, 'collisionStart', event => {
         event.pairs.forEach (collision => {
             const winLabels = ['player', 'goal'];
@@ -293,7 +329,7 @@ const eventsBuild = (enemy) =>{
     
             //Win Condition
             if (winLabels.includes(collision.bodyA.label) && winLabels.includes(collision.bodyB.label)){
-                win();
+                setTimeout(()=>{if (collision.separation > 20){win();}},20)
             }
     
             // Coin Pickup
@@ -307,34 +343,72 @@ const eventsBuild = (enemy) =>{
             }
 
             if (enemyLabels.includes(collision.bodyA.label) && enemyLabels.includes(collision.bodyB.label)){
-                enemy.render.opacity = 0.1;
+                if(collision.bodyA.label === 'enemy'){
+                    collision.bodyA.render.opacity = 0.1;
+                }else{
+                    collision.bodyB.render.opacity = 0.1;
+                }
             }
         })
     })
     
     }
    //Controller =================================================================================================================================
-const controlsInit = (Body, player, speed)=>{
+const controlsInit = (Body, player, walls)=>{
     const {x,y} = player.velocity;
     document.addEventListener('keydown', (event) =>{
+        
+        // console.log('move player up');  
         if (event.keyCode === 87){
-            // console.log('move player up');
-            Body.setVelocity(player, {x, y:y-speedy})
+            const point = Vector.create(player.vertices[0].x+(unitWidth/2), player.vertices[0].y - (unitThickness/2));
+            if(moveCheck(point,walls)){
+                Body.setVelocity(player, {x, y:y-speedy});
+            }else{
+                console.log('not moving up');
+            }
         }
+
+        // console.log('move player right');
         if (event.keyCode === 68){
-            // console.log('move player right');
+            const point = Vector.create(player.vertices[1].x + (unitThickness/2), player.vertices[1].y + (unitHeight/2));
+            if(moveCheck(point,walls)){
             Body.setVelocity(player, {x:x+speedx, y})
+            }else{
+                console.log('not moving right');
+            }
         }
+
+        // console.log('move player down');
         if (event.keyCode === 83){
-            // console.log('move player down');
+            const point = Vector.create(player.vertices[2].x - (unitWidth/2), player.vertices[2].y + (unitThickness/2));
+            if(moveCheck(point,walls)){
             Body.setVelocity(player, {x, y:y+speedy})
+            }else{
+                console.log('not moving down');
+            }
         }
+
+        // console.log('move player left');
         if (event.keyCode === 65){
-            // console.log('move player left');
+            const point = Vector.create(player.vertices[3].x - (unitThickness/2), player.vertices[3].y - (unitHeight/2));
+            if(moveCheck(point,walls)){
             Body.setVelocity(player, {x:x-speedx, y})
+            }else{
+                console.log('not moving left');
+            }
         }
     })
 
+//check if there
+const moveCheck = (point,walls)=>{
+    let blocked = false
+    for (const wall of walls) {
+        if(Bounds.contains(wall.bounds, point)){
+            blocked = true;
+        }
+    }
+    return !blocked;
+}
 //TODO ==== REFACTOR NOT MY CODE
 document.addEventListener('touchstart', handleTouchStart, false);        
 document.addEventListener('touchmove', handleTouchMove, false);
@@ -381,4 +455,4 @@ function handleTouchMove(evt) {
     xDown = null;
     yDown = null;                                             
 };
-    }
+}

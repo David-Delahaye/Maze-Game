@@ -15,14 +15,12 @@ coinDisplay.innerHTML = 'Coins: '+ coins;
 update();
 
 const newLevel = (reason) => {
-
 console.log(reason);
 createMaze({
     root:game,
     difficulty:(level*0.02)+1.4,
     width:game.clientWidth,
     height:game.clientHeight,
-
 })
 }
 
@@ -85,4 +83,5 @@ function preventMotion(event)
 
 menuHead.textContent = 'Maze Game';
 menu.classList.remove('hidden');
+
 newLevel('start');
