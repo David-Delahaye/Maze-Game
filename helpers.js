@@ -1,48 +1,41 @@
-//Initialize--------------------------------------------------------
-const worldBuild = (root,difficulty,width,height) =>{
-    Engine = Matter.Engine,
-    Render = Matter.Render,
-    World = Matter.World,
-    Runner = Matter.Runner,
-    Bodies = Matter.Bodies,
-    Body = Matter.Body,
-    Bounds = Matter.Bounds,
-    Events = Matter.Events,
-    Vector = Matter.Vector,
-    columns = Math.round(width/200 * difficulty),
-    rows = Math.round(height/200 * difficulty),
-    unitWidth = width/columns,
-    unitHeight = height/rows,
-    unitThickness = 100/rows,
-    friction = 0.25,
-    speedx = (50*width/600) * (4/columns),
-    speedy = (50*height/600) * (4/rows),
-    hue = Math.floor(Math.random()*350),
-    // create an engine
-    engine = Engine.create(),
-    world = engine.world,
-    // create a renderer
-    render = Render.create({
-    element: root,
-    engine: engine,
-    options:{
-        wireframes:false,
-        width:width,
-        height:height,
-        background: 'hsl('+hue+',40%,10%)'
+class Game {
+    constructor(root, level, width, height) {
+        this.difficulty = level*0.05+1.4;
+        this.width = width,
+        this.height = height,
+        this.columns = Math.round(width / 200 * this.difficulty),
+        this.rows = Math.round(height / 200 * this.difficulty),
+        this.unitWidth = width / this.columns,
+        this.unitHeight = height / this.rows,
+        this.unitThickness = 100 / this.rows,
+        this.friction = 0.25,
+        this.speedx = (50 * width / 600) * (4 / this.columns),
+        this.speedy = (50 * height / 600) * (4 / this.rows),
+        this.hue = Math.floor(Math.random() * 350),
+            // create an engine
+        this.engine = Engine.create(),
+        this.world = this.engine.world,
+            // create a renderer
+        this.render = Render.create({
+            element: root,
+            engine: this.engine,
+            options: {
+                wireframes: false,
+                width: width,
+                height: height,
+                background: 'hsl(' + this.hue + ',40%,10%)'
+            }
+        });
+        Engine.run(this.engine);
+        Runner.run(Runner.create(), this.engine);
+        Render.run(this.render);
+        this.engine.world.gravity.y = 0;
+        document.body.style.backgroundColor = 'hsl(' + this.hue + ', 40%,30%)';
     }
-    })
-    Engine.run(engine);
-    Runner.run(Runner.create(),engine);
-    Render.run(render);
-    engine.world.gravity.y = 0;
-    document.body.style.backgroundColor = 'hsl('+hue+', 40%,30%)'
-    
-}
-
 //Maze Gen-----------------------------------------------------------------------------------------
-const mazeBuild = (width,height) =>{
-    const walls = [];
+    mazeBuild = () =>{
+    const {width,height,unitThickness,hue,world,rows,columns,unitWidth,unitHeight}=this;
+    this.walls = [];
     //walls -------------
     const edges=[
         //bottom
@@ -56,6 +49,9 @@ const mazeBuild = (width,height) =>{
         
     // add walls
     World.add(world, edges);
+    for (const edge of edges) {
+        this.walls.push(edge);
+    }
     
     //maze Generation ---------------
     const grid = Array(rows)
@@ -155,7 +151,7 @@ const mazeBuild = (width,height) =>{
                 }
             )
             World.add(world, wall);
-            walls.push(wall);
+            this.walls.push(wall);
         })
     })
     verticals.forEach((row, rowIndex)=>{
@@ -179,7 +175,7 @@ const mazeBuild = (width,height) =>{
                     }
             )
             World.add(world, wall);
-            walls.push(wall);
+            this.walls.push(wall);
         })
     })
     
@@ -202,22 +198,23 @@ const mazeBuild = (width,height) =>{
             World.add(world,nub)
         }
     }
-    return walls;
 }
 
-const worldClear = () =>{
-    World.clear(world);
-    Engine.clear(engine);
-    Render.stop(render);
-    render.canvas.remove();
-    render.canvas = null;
-    render.context = null;
+    
+worldClear = () =>{
+    World.clear(this.world);
+    Engine.clear(this.engine);
+    Render.stop(this.render);
+    this.render.canvas.remove();
+    this.render.canvas = null;
+    this.render.context = null;
 }
 
 
 
 //sprites=========================================================================================================================================
-const spritesBuild = (width,height) => {
+spritesBuild = () => {
+    const {width,height,unitHeight,unitWidth,unitThickness,hue,world,friction,rows,columns} = this;
     const goal = Bodies.rectangle(
         (width - unitWidth/2),
         (height  - unitHeight/2),
@@ -233,7 +230,7 @@ const spritesBuild = (width,height) => {
     )
     World.add(world,goal)
     
-    const player = Bodies.rectangle(
+    this.player = Bodies.rectangle(
         (unitWidth/2),
         (unitHeight/2),
         unitWidth - unitThickness,
@@ -250,7 +247,7 @@ const spritesBuild = (width,height) => {
             },
         }
     )
-    World.add(world,player);
+    World.add(world,this.player);
 
     for(let i = 0; i<((rows*columns)/10);i++){
     const coin = Bodies.circle(
@@ -269,7 +266,7 @@ const spritesBuild = (width,height) => {
     World.add(world,coin)
     }
 
-    let enemies = [];
+    this.enemies = [];
     for (let i = 0; i < 2; i++) {
         const sideways = Math.random();
         if (sideways > 0.5){
@@ -291,7 +288,7 @@ const spritesBuild = (width,height) => {
                 }
             })
         World.add(world,enemy);
-        enemies.push(enemy);
+        this.enemies.push(enemy);
         }else{
         const enemy = Bodies.rectangle(
             ((Math.floor(Math.random()*columns-1) +1) * unitWidth) + unitWidth,
@@ -311,16 +308,15 @@ const spritesBuild = (width,height) => {
                 }
             })
             World.add(world,enemy);
-            enemies.push(enemy);
+            this.enemies.push(enemy);
         }
 
 
     }
-
-    return {player,goal,enemies}
    }
 //EVENTS BUILD ====================================================================================================================================================
-const eventsBuild = (enemies) =>{
+eventsBuild = () =>{
+    const {engine,world} = this
     Events.on(engine, 'collisionStart', event => {
         event.pairs.forEach (collision => {
             const winLabels = ['player', 'goal'];
@@ -354,17 +350,19 @@ const eventsBuild = (enemies) =>{
     
     }
    //Controller =================================================================================================================================
-const controlsInit = (Body, player, walls)=>{
-    const {x,y} = player.velocity;
-    document.addEventListener('keydown', (event) =>{
-        
+controlsBuild = ()=>{
+    const {player,unitThickness,unitWidth,unitHeight,walls,speedx,speedy}=this;
+    const {x,y} = this.player.velocity;
+
+    document.removeEventListener('keydown',handleKeyMove)
+    document.addEventListener('keydown', handleKeyMove)
+
+    function handleKeyMove (event){
         // console.log('move player up');  
         if (event.keyCode === 87){
             const point = Vector.create(player.vertices[0].x+(unitWidth/2), player.vertices[0].y - (unitThickness/2));
             if(moveCheck(point,walls)){
                 Body.setVelocity(player, {x, y:y-speedy});
-            }else{
-                console.log('not moving up');
             }
         }
 
@@ -373,18 +371,14 @@ const controlsInit = (Body, player, walls)=>{
             const point = Vector.create(player.vertices[1].x + (unitThickness/2), player.vertices[1].y + (unitHeight/2));
             if(moveCheck(point,walls)){
             Body.setVelocity(player, {x:x+speedx, y})
-            }else{
-                console.log('not moving right');
             }
         }
 
         // console.log('move player down');
         if (event.keyCode === 83){
-            const point = Vector.create(player.vertices[2].x - (unitWidth/2), player.vertices[2].y + (unitThickness/2));
+            const point = Vector.create(player.vertices[2].x - (unitWidth/2), player.vertices[2].y + (unitThickness/2))
             if(moveCheck(point,walls)){
             Body.setVelocity(player, {x, y:y+speedy})
-            }else{
-                console.log('not moving down');
             }
         }
 
@@ -393,13 +387,11 @@ const controlsInit = (Body, player, walls)=>{
             const point = Vector.create(player.vertices[3].x - (unitThickness/2), player.vertices[3].y - (unitHeight/2));
             if(moveCheck(point,walls)){
             Body.setVelocity(player, {x:x-speedx, y})
-            }else{
-                console.log('not moving left');
             }
         }
-    })
+    }
 
-//check if there
+//check if wall in the way
 const moveCheck = (point,walls)=>{
     let blocked = false
     for (const wall of walls) {
@@ -409,7 +401,8 @@ const moveCheck = (point,walls)=>{
     }
     return !blocked;
 }
-//TODO ==== REFACTOR NOT MY CODE
+
+//Mobile swipe support
 document.addEventListener('touchstart', handleTouchStart, false);        
 document.addEventListener('touchmove', handleTouchMove, false);
 
@@ -422,7 +415,7 @@ function getTouches(evt) {
 }                                                     
 
 function handleTouchStart(evt) {
-    const firstTouch = getTouches(evt)[0];                                      
+    const firstTouch = getTouches(evt)[0];                                   
     xDown = firstTouch.clientX;                                      
     yDown = firstTouch.clientY;                                      
 };                                                
@@ -440,19 +433,36 @@ function handleTouchMove(evt) {
 
     if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
         if ( xDiff > 0 ) {
+            //left
+            const point = Vector.create(player.vertices[3].x - (unitThickness/2), player.vertices[3].y - (unitHeight/2));
+            if(moveCheck(point,walls)){
             Body.setVelocity(player, {x:x-speedx, y})
+            }
         } else {
+            //right
+            const point = Vector.create(player.vertices[1].x + (unitThickness/2), player.vertices[1].y + (unitHeight/2));
+            if(moveCheck(point,walls)){
             Body.setVelocity(player, {x:x+speedx, y})
+            }
         }                       
     } else {
         if ( yDiff > 0 ) {
-            Body.setVelocity(player, {x, y:y-speedy})
+            //up
+            const point = Vector.create(player.vertices[0].x+(unitWidth/2), player.vertices[0].y - (unitThickness/2));
+            if(moveCheck(point,walls)){
+                Body.setVelocity(player, {x, y:y-speedy});
+            }
         } else { 
+            //down
+            const point = Vector.create(player.vertices[2].x - (unitWidth/2), player.vertices[2].y + (unitThickness/2))
+            if(moveCheck(point,walls)){
             Body.setVelocity(player, {x, y:y+speedy})
+            }
         }                                                                 
     }
     /* reset values */
     xDown = null;
     yDown = null;                                             
 };
+}
 }
