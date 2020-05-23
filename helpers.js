@@ -1,6 +1,9 @@
 class Game {
     constructor(root, level, width, height) {
         this.difficulty = level*0.05+1.4;
+        if (level%10 ===0){
+            this.difficulty +=2;
+        }
         this.width = width,
         this.height = height,
         this.columns = Math.round(width / 200 * this.difficulty),
