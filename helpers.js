@@ -2,12 +2,19 @@ class Game {
     constructor(root, level, width, height) {
         this.difficulty = level*0.05+1.4;
         if (level%10 ===0){
-            this.difficulty +=2;
+            this.difficulty +=1;
         }
         this.width = width,
-        this.height = height,
-        this.columns = Math.round(width / 200 * this.difficulty),
-        this.rows = Math.round(height / 200 * this.difficulty),
+        this.height = height;
+        if(width>height){
+            this.columns = Math.round((2*(width/height))*this.difficulty);
+            this.rows =  Math.round(2*this.difficulty);
+        }else{
+            this.columns = Math.round(2*this.difficulty);
+            this.rows = Math.round((2*(height/width))*this.difficulty);
+        }
+        // this.columns = Math.round(width / 100 * this.difficulty),
+        // this.rows = Math.round(height / 100 * this.difficulty),
         this.unitWidth = width / this.columns,
         this.unitHeight = height / this.rows,
         this.unitThickness = 100 / this.rows,
@@ -70,8 +77,10 @@ class Game {
         .map(()=> Array(columns).fill(false));
     
     //starting cell
-    const startx = Math.floor(Math.random()*rows);
-    const starty = Math.floor(Math.random()*columns);
+    const startx = rows-1;
+    const starty = columns-1;
+    // const startx = Math.floor(Math.random()*rows);
+    // const starty = Math.floor(Math.random()*columns);
     
     const shuffle = (arr) =>{
         for (let i = arr.length-1; i >= 1; i--) {
@@ -253,10 +262,11 @@ spritesBuild = () => {
     World.add(world,this.player);
 
     for(let i = 0; i<((rows*columns)/10);i++){
-    const coin = Bodies.circle(
+    const coin = Bodies.rectangle(
         (Math.floor(Math.random()*columns) * unitWidth) + unitWidth/2,
         (Math.floor(Math.random()*rows) * unitHeight) + unitHeight/2,
-        (unitWidth/10),
+        (unitWidth/4),
+        (unitHeight/4),
         {
         isStatic:true,
         label:'coin',
