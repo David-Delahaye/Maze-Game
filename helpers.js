@@ -68,11 +68,11 @@ class Game {
         .fill(null)
         .map(()=> Array(columns).fill(false));
     
-    const verticals = Array(rows)
+    this.verticals = Array(rows)
         .fill(null)
         .map(()=> Array(columns-1).fill(false));
     
-    const horizontals = Array(rows-1)
+    this.horizontals = Array(rows-1)
         .fill(null)
         .map(()=> Array(columns).fill(false));
     
@@ -126,13 +126,13 @@ class Game {
     
         //remove a wall from either horizontal or vertical array
             if(direction === 'left'){
-                verticals[row][column-1] = true;
+                this.verticals[row][column-1] = true;
             }else if(direction ==='right'){
-                verticals[row][column] = true;
+                this.verticals[row][column] = true;
             }else if(direction ==='up'){
-                horizontals[row-1][column] = true;
+                this.horizontals[row-1][column] = true;
             }else if(direction ==='down'){
-                horizontals[row][column] = true;
+                this.horizontals[row][column] = true;
             }
     
         //visit that cell
@@ -143,7 +143,7 @@ class Game {
     
     stepThroughCell(startx,starty);
     //Draw the maze walls
-    horizontals.forEach((row, rowIndex)=>{
+    this.horizontals.forEach((row, rowIndex)=>{
         row.forEach((open, columnIndex)=> {
             if(open === true){
                 return
@@ -166,7 +166,7 @@ class Game {
             this.walls.push(wall);
         })
     })
-    verticals.forEach((row, rowIndex)=>{
+    this.verticals.forEach((row, rowIndex)=>{
         row.forEach((open, columnIndex)=> {
             if(open === true){
                 return
@@ -280,32 +280,43 @@ spritesBuild = () => {
     }
 
     this.enemies = [];
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < Math.floor(this.difficulty-1); i++) {
         const sideways = Math.random();
         if (sideways > 0.5){
-        const enemy = Bodies.rectangle(
-            ((Math.floor(Math.random()*columns-1) +1) * unitWidth) + (unitWidth/2),
-            ((Math.floor(Math.random()*rows-1) +1) * unitHeight) + unitHeight,
-            unitWidth- unitThickness,
-            unitThickness,
-            {
-                inertia:Infinity,
-                frictionAir:friction,
-                friction:0,
-                slop:0,
-                isStatic:true,
-                isSensor:true,
-                label:'enemy',
-                render:{
-                    fillStyle: 'hsl('+hue+',40%,90%)'
-                }
-            })
-        World.add(world,enemy);
-        this.enemies.push(enemy);
+        for(let i = 0;i<10;i++){
+        const plotX = Math.floor(Math.random()*this.columns);
+        const plotY = Math.floor(Math.random()*(this.rows-1));
+        if(this.horizontals[plotY][plotX]){
+            const enemy = Bodies.rectangle(
+                (plotX * unitWidth) + unitWidth/2,
+                (plotY * unitHeight) + unitHeight,
+                unitWidth- unitThickness,
+                unitThickness,
+                {
+                    inertia:Infinity,
+                    frictionAir:friction,
+                    friction:0,
+                    slop:0,
+                    isStatic:true,
+                    isSensor:true,
+                    label:'enemy',
+                    render:{
+                        fillStyle: 'hsl('+hue+',40%,40%)'
+                    }
+                })
+            World.add(world,enemy);
+            this.enemies.push(enemy);
+            break;
+        }
+        }
         }else{
+        for(let i = 0;i<10;i++){
+        const plotX = Math.floor(Math.random()*this.columns);
+        const plotY = Math.floor(Math.random()*this.rows);
+        if(this.verticals[plotY][plotX]){
         const enemy = Bodies.rectangle(
-            ((Math.floor(Math.random()*columns-1) +1) * unitWidth) + unitWidth,
-            ((Math.floor(Math.random()*rows-1) +1) * unitHeight) + (unitHeight/2),
+            (plotX * unitWidth) + unitWidth,
+            (plotY * unitHeight) + unitHeight/2,
             unitThickness,
             unitHeight - unitThickness,
             {
@@ -317,16 +328,17 @@ spritesBuild = () => {
                 isSensor:true,
                 label:'enemy',
                 render:{
-                    fillStyle: 'hsl('+hue+',40%,90%)'
+                    fillStyle: 'hsl('+hue+',40%,40%)'
                 }
             })
             World.add(world,enemy);
             this.enemies.push(enemy);
+            break;
         }
-
-
-    }
+        }
+        }
    }
+}
 //EVENTS BUILD ====================================================================================================================================================
 eventsBuild = () =>{
     const {engine,world} = this
