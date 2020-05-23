@@ -1,5 +1,4 @@
-class Game {
-  constructor(root, level, width, height) {
+function Game(root, level, width, height){
     this.difficulty = level * 0.05 + 1.4;
     if (level % 10 === 0) {
       this.difficulty += 1;
@@ -42,7 +41,7 @@ class Game {
     document.body.style.backgroundColor = "hsl(" + this.hue + ", 40%,30%)";
   }
   //Maze Gen-----------------------------------------------------------------------------------------
-  mazeBuild = () => {
+  Game.prototype.mazeBuild = function(){
     const {
       width,
       height,
@@ -81,7 +80,7 @@ class Game {
 
     // add walls
     World.add(world, edges);
-    for (const edge of edges) {
+    for (const edge of edges){
       this.walls.push(edge);
     }
 
@@ -241,7 +240,7 @@ class Game {
     }
   };
 
-  worldClear = () => {
+  Game.prototype.worldClear = function(){
     World.clear(this.world);
     Engine.clear(this.engine);
     Render.stop(this.render);
@@ -251,7 +250,7 @@ class Game {
   };
 
   //sprites=========================================================================================================================================
-  spritesBuild = () => {
+  Game.prototype.spritesBuild = function(){
     const {
       width,
       height,
@@ -380,7 +379,7 @@ class Game {
     }
   };
   //EVENTS BUILD ====================================================================================================================================================
-  eventsBuild = () => {
+  Game.prototype.eventsBuild = function(){
     const { engine, world } = this;
     Events.on(engine, "collisionStart", (event) => {
       event.pairs.forEach((collision) => {
@@ -425,7 +424,7 @@ class Game {
     });
   };
   //Controller =================================================================================================================================
-  controlsBuild = () => {
+  Game.prototype.controlsBuild = function(){
     const {
       player,
       unitThickness,
@@ -574,4 +573,3 @@ class Game {
       yDown = null;
     }
   };
-}
