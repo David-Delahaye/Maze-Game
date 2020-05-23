@@ -40,6 +40,11 @@ html{
     height: 10vh;
     padding: 10px;
 }
+#stats{
+    display: flex;
+    justify-content:start;
+    align-items: center;
+}
 #coins{
     color:gold;
     font-size: 20px;
@@ -90,7 +95,7 @@ html{
 }
 
 @media (max-width: 600px){
-    #score-bar{
+    #stats{
         flex-direction: column;
         justify-content:start;
         align-items: start;

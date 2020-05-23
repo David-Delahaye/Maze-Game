@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta content='width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+      name="viewport"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap"
+      rel="stylesheet"
+    />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-    <div id="game"></div>
-    <div id="score-bar">
-    <p id="level"></p>
-    <p id="coins"></p>
-    </div>
-    <div class="menu">
+      <div id="game"></div>
+      <div id="score-bar">
+        <div id="stats">
+          <p id="level"></p>
+          <p id="coins"></p>
+        </div>
+        <div id="shop">
+        <button id="view">Remove all fake walls</button>
+        </div>
+      </div>
+      <div class="menu">
         <h1 id="menu-head">Well done</h1>
         <button id="menu-button">Next level</button>
-    </div>
+      </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.14.2/matter.js"></script>
     <script src="helpers.js"></script>
     <script src="maze.js"></script>
     <script src="index.js"></script>
-</body>
+  </body>
 </html>
