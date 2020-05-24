@@ -55,9 +55,27 @@ html{
     font-size: 20px;
     padding-right: 20px;
 }
+#timer{
+    color: rgb(255, 213, 0);
+    font-size: 20px;
+    padding-right: 20px;
+}
+
+#shop{
+    margin-left: auto;
+}
 
 #wallBreaker{
     background-image: url(WallBreaker.png);
+    background-position: center;
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    border: none;
+}
+
+#addTime{
+    background-image: url(TimeAdd.png);
     background-position: center;
     background-size: cover;
     width: 50px;

@@ -38,7 +38,6 @@ function Game(root, level, width, height){
     Runner.run(Runner.create(), this.engine);
     Render.run(this.render);
     this.engine.world.gravity.y = 0;
-    document.body.style.backgroundColor = "hsl(" + this.hue + ", 40%,30%)";
   }
   //Maze Gen-----------------------------------------------------------------------------------------
   Game.prototype.mazeBuild = function(){
@@ -441,6 +440,7 @@ function Game(root, level, width, height){
 
     function handleKeyMove(event) {
       // console.log('move player up');
+      if(active){
       if (event.keyCode === 87) {
         const point = Vector.create(
           player.vertices[0].x + unitWidth / 2,
@@ -484,6 +484,7 @@ function Game(root, level, width, height){
         }
       }
     }
+    }
 
     //check if wall in the way
     const moveCheck = (point, walls) => {
@@ -516,6 +517,7 @@ function Game(root, level, width, height){
     }
 
     function handleTouchMove(evt) {
+      if(active){
       if (!xDown || !yDown) {
         return;
       }
@@ -567,9 +569,10 @@ function Game(root, level, width, height){
             Body.setVelocity(player, { x, y: y + speedy });
           }
         }
-      }
+    }
       /* reset values */
       xDown = null;
       yDown = null;
     }
+  }
   };
