@@ -281,8 +281,8 @@ function Game(root, level, width, height){
     this.player = Bodies.rectangle(
       unitWidth / 2,
       unitHeight / 2,
-      unitWidth - unitThickness,
-      unitHeight - unitThickness,
+      unitWidth - (unitThickness * 0.95),
+      unitHeight - (unitThickness * 0.95),
       {
         inertia: Infinity,
         frictionAir: friction,
@@ -297,7 +297,7 @@ function Game(root, level, width, height){
     );
     World.add(world, this.player);
 
-    for (let i = 0; i < (rows * columns) / 10; i++) {
+    for (let i = 0; i < ((rows * columns)*moneyMultiplier) / 10; i++) {
       const coin = Bodies.rectangle(
         Math.floor(Math.random() * columns) * unitWidth + unitWidth / 2,
         Math.floor(Math.random() * rows) * unitHeight + unitHeight / 2,

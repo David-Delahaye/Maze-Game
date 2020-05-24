@@ -19,8 +19,10 @@ let menuHead = document.querySelector("#menu-head");
 let menuButton = document.querySelector("#menu-button");
 let viewWallsButton = document.querySelector("#wallBreaker");
 let viewWallsButtonPressed = false;
-let timerAddButton = document.querySelector('#addTime')
+let timerAddButton = document.querySelector('#addTime');
+let moneyAddButton = document.querySelector('#addMoney');
 let timer = null;
+let moneyMultiplier = localStorage.getItem('moneyMultiplier') || 1;
 let timeMax = localStorage.getItem('timeMax') || 10;
 let timeLeft = timeMax;
 let level = localStorage.getItem('level') || 1;
@@ -60,6 +62,15 @@ timerAddButton.addEventListener("click", ()=>{
   }
 })
 
+moneyAddButton.addEventListener("click", ()=>{
+  if (coins >= 20) {
+    moneyMultiplier++;
+    localStorage.setItem('moneyMultiplier', moneyMultiplier);
+    coins -= 20;
+    update();
+  }
+})
+
 //build wall
 const gameBuild = () => {
   game1 = new Game(game, level, game.clientWidth, game.clientHeight);
@@ -69,8 +80,6 @@ const gameBuild = () => {
   game1.eventsBuild();
   update();
   viewWallsButtonPressed = false;
-  viewWallsButton.style.backgroundColor = "hsl(" + game1.hue + ", 40%,20%)";
-  timerAddButton.style.backgroundColor = "hsl(" + game1.hue + ", 40%,20%)";
   document.body.style.backgroundColor = "hsl(" + game1.hue + ", 40%,20%)";
 };
 
