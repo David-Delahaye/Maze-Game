@@ -1,8 +1,12 @@
 function Game(root, level, width, height){
-    this.difficulty = level * 0.05 + 1.4;
-    if (level % 10 === 0) {
-      this.difficulty += 1;
+    this.difficulty = 1.4;
+    for(let i = 0; i < level ;i++){
+      this.difficulty += (i*0.7/level)*0.05;
     }
+    if (level % 10 === 0) {
+      this.difficulty += 0.5;
+    }
+    console.log(this.difficulty);
     (this.width = width), (this.height = height);
     if (width > height) {
       this.columns = Math.round(2 * (width / height) * this.difficulty);
@@ -16,10 +20,10 @@ function Game(root, level, width, height){
     (this.unitWidth = width / this.columns),
       (this.unitHeight = height / this.rows),
       (this.unitThickness = 100 / this.rows),
-      (this.friction = 0.25),
+      (this.friction = 0.249),
       (this.speedx = ((50 * width) / 600) * (4 / this.columns)),
       (this.speedy = ((50 * height) / 600) * (4 / this.rows)),
-      (this.hue = Math.floor(Math.random() * 350)),
+      (this.hue = Math.floor(Math.random() * 356)),
       // create an engine
       (this.engine = Engine.create()),
       (this.world = this.engine.world),
@@ -281,8 +285,8 @@ function Game(root, level, width, height){
     this.player = Bodies.rectangle(
       unitWidth / 2,
       unitHeight / 2,
-      unitWidth - (unitThickness * 0.95),
-      unitHeight - (unitThickness * 0.95),
+      unitWidth - (unitThickness * 0.90),
+      unitHeight - (unitThickness * 0.90),
       {
         inertia: Infinity,
         frictionAir: friction,

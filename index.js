@@ -18,9 +18,12 @@ let menu = document.querySelector(".menu");
 let menuHead = document.querySelector("#menu-head");
 let menuButton = document.querySelector("#menu-button");
 let viewWallsButton = document.querySelector("#wallBreaker");
+let viewWallsButtonColor = document.querySelector('#wallBreaker-color')
 let viewWallsButtonPressed = false;
 let timerAddButton = document.querySelector('#addTime');
+let timerAddButtonColor = document.querySelector('#addTime-color');
 let moneyAddButton = document.querySelector('#addMoney');
+let moneyAddButtonColor = document.querySelector('#addMoney-color');
 let timer = null;
 let moneyMultiplier = localStorage.getItem('moneyMultiplier') || 1;
 let timeMax = localStorage.getItem('timeMax') || 10;
@@ -30,9 +33,10 @@ let coins = localStorage.getItem('coins') || 0;
 let startingSession = true;
 let active = false
 //levelData Reset
-const resetData = ()=>{
+
+const resetData = (num)=>{
   coins = 0;
-  level = 1;
+  level = num;
   timeMax = 10;
   moneyMultiplier = 1;
   localStorage.setItem('timeMax',timeMax);
@@ -56,10 +60,10 @@ viewWallsButton.addEventListener("click", () => {
 
 //add time shop
 timerAddButton.addEventListener("click", ()=>{
-  if (coins >= 20) {
+  if (coins >= 20 + Math.floor((timeMax-10)*5)) {
     timeMax++;
     localStorage.setItem('timeMax', timeMax);
-    coins -= 20;
+    coins -= 20 + Math.floor((timeMax-10)*5);
     timeLeft ++;
     update();
   }
@@ -84,6 +88,11 @@ const gameBuild = () => {
   update();
   viewWallsButtonPressed = false;
   document.body.style.backgroundColor = "hsl(" + game1.hue + ", 40%,20%)";
+  timeDisplay.style.top = (game.clientHeight - (game1.unitThickness/2)) + 'px'
+  timeDisplay.style.height = (game1.unitThickness/2) + 'px'
+  viewWallsButtonColor.style.fill = "hsl(" + (game1.hue) + ", 70%,40%)";
+  timerAddButtonColor.style.fill = "hsl(" + (game1.hue) + ", 70%,40%)";
+  moneyAddButtonColor.style.fill = "hsl(" + (game1.hue) +", 70%,40%)";
 };
 
 const clear = () => {
@@ -128,7 +137,6 @@ menuButton.addEventListener("click", () => {
 //coundtown
 function startTimer(){
   timer = setInterval(()=>{
-  console.log('tick');
   timeLeft--
   update();
   if(timeLeft <= 0){
@@ -162,8 +170,6 @@ const coinPickup = () => {
   document.body.appendChild(picked);
   picked.classList.add('coinFade')
   picked.innerHTML = "+ " + coinValue;
-  console.log(Math.floor(game1.player.position.x) + 'px');
-  console.log(Math.floor(game1.player.position.y)+ 'px')
   picked.style.left = (Math.floor(game1.player.position.x) + 'px');
   picked.style.top = (Math.floor(game1.player.position.y)+ 'px')
   update();
