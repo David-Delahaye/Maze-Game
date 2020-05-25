@@ -34,6 +34,9 @@ const resetData = ()=>{
   coins = 0;
   level = 1;
   timeMax = 10;
+  moneyMultiplier = 1;
+  localStorage.setItem('timeMax',timeMax);
+  localStorage.setItem('moneyMultiplier',moneyMultiplier);
   update();
 }
 
@@ -64,7 +67,7 @@ timerAddButton.addEventListener("click", ()=>{
 
 moneyAddButton.addEventListener("click", ()=>{
   if (coins >= 20) {
-    moneyMultiplier++;
+    moneyMultiplier = parseFloat(moneyMultiplier) + (1/parseFloat(moneyMultiplier));
     localStorage.setItem('moneyMultiplier', moneyMultiplier);
     coins -= 20;
     update();
@@ -153,7 +156,7 @@ const newLevel = () =>{
 }
 
 const coinPickup = () => {
-  coins++;
+  coins = parseInt(coins)+parseInt(Math.floor(1*Math.random()*moneyMultiplier)+1);
   update();
 };
 

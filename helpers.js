@@ -297,7 +297,7 @@ function Game(root, level, width, height){
     );
     World.add(world, this.player);
 
-    for (let i = 0; i < ((rows * columns)*moneyMultiplier) / 10; i++) {
+    for (let i = 0; i < (((rows * columns)/10)); i++) {
       const coin = Bodies.rectangle(
         Math.floor(Math.random() * columns) * unitWidth + unitWidth / 2,
         Math.floor(Math.random() * rows) * unitHeight + unitHeight / 2,
