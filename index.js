@@ -139,7 +139,7 @@ function startTimer(){
   
 //ui update
   const update = () => {
-    timeDisplay.innerHTML = "Time Left: " + timeLeft;
+    timeDisplay.style.width = (Math.floor(timeLeft/timeMax*100)+"%")
     localStorage.setItem('level', level);
     localStorage.setItem('coins', coins);
     levelDisplay.innerHTML = "Level: " + localStorage.getItem('level', level);;
@@ -156,8 +156,18 @@ const newLevel = () =>{
 }
 
 const coinPickup = () => {
-  coins = parseInt(coins)+parseInt(Math.floor(1*Math.random()*moneyMultiplier)+1);
+  const coinValue = parseInt(Math.floor(1*Math.random()*moneyMultiplier)+1);
+  coins = parseInt(coins)+coinValue;
+  const picked = document.createElement('div');
+  document.body.appendChild(picked);
+  picked.classList.add('coinFade')
+  picked.innerHTML = "+ " + coinValue;
+  console.log(Math.floor(game1.player.position.x) + 'px');
+  console.log(Math.floor(game1.player.position.y)+ 'px')
+  picked.style.left = (Math.floor(game1.player.position.x) + 'px');
+  picked.style.top = (Math.floor(game1.player.position.y)+ 'px')
   update();
+  setTimeout(()=>{document.body.removeChild(picked)},1000) 
 };
 
 //refresh delay

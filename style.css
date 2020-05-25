@@ -56,9 +56,11 @@ html{
     padding-right: 20px;
 }
 #timer{
-    color: rgb(255, 213, 0);
-    font-size: 20px;
-    padding-right: 20px;
+    background-color: rgb(255, 213, 0);
+    width: 100%;
+    top:89vh;
+    height: 10px;
+    position: absolute;
 }
 
 #shop{
@@ -133,5 +135,23 @@ html{
         flex-direction: column;
         justify-content:start;
         align-items: start;
+    }
+}
+
+.coinFade{
+    position: absolute;
+    color: gold;
+    width: fit-content;
+    animation: fadeOutUp ease-out 1s forwards;
+}
+
+@keyframes fadeOutUp{
+    0%{
+        opacity: 1;
+        transform: translateY(0px);
+    }
+    100%{
+        opacity: 0;
+        transform: translateY(-15px);
     }
 }
