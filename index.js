@@ -20,8 +20,8 @@ const gameData = {
   color:{
     newHue:function(){gameData.color.gameHue =(Math.floor(Math.random()*356))},
     gameHue:1,
-    player:function(){return `hsl( ${gameData.color.gameHue}, 70%, 40%)`},
-    goal:function(){return `hsl( ${gameData.color.gameHue+178}, 70%, 40%)`},
+    player:function(){return `hsl( ${gameData.color.gameHue}, 70%, 50%)`},
+    goal:function(){return `hsl( ${gameData.color.gameHue+178}, 70%, 50%)`},
     scoreBar:function(){return `hsl( ${gameData.color.gameHue}, 40%, 30%)`},
     nub:function(){return `hsl( ${gameData.color.gameHue}, 40%, 30%)`},
     wall:function(){return `hsl( ${gameData.color.gameHue}, 40%, 40%)`},
@@ -31,6 +31,7 @@ const gameData = {
     levelDisplay:document.querySelector("#level"),
     coinDisplay:document.querySelector("#coins"),
     timeDisplay:document.querySelector("#timer"),
+    timeBackDisplay:document.querySelector("#timer-back"),
     resetDisplay:document.querySelector('#reset')
   },
   menu:{
@@ -54,7 +55,7 @@ const gameData = {
     shopPrice:document.querySelector('#addMoney-cost'),
     shopLevel:document.querySelector('#addMoney-lvl'),
     cost:function(){return 20*this.value},
-    coinValue:function(){ const coinValue = parseInt(-Math.floor(5*Math.random())+parseInt(gameData.moneyMultiplier.value));
+    coinValue:function(){ const coinValue = parseInt(-Math.floor(3*Math.random())+parseInt(gameData.moneyMultiplier.value));
                           if(coinValue >=1 && Math.sign(coinValue) === 1){
                             return coinValue;
                           }else{return 1}},
@@ -69,7 +70,13 @@ const gameData = {
 
 //levelData Reset
 gameData.display.resetDisplay.addEventListener('click', ()=>{
-  resetData(1,0,)
+  resetData(1,0,);
+  clear();
+  newLevel();
+  gameBuild();
+  gameData.startingSession = true;
+  gameData.menu.head.textContent = "Level 1";
+  gameData.menu.button.textContent = "Begin";
 })
 const resetData = (l,c)=>{
   gameData.coins = c;
@@ -106,7 +113,7 @@ gameData.timer.shop.addEventListener("click", ()=>{
     update();
   }
 })
-
+//money shop
 gameData.moneyMultiplier.shop.addEventListener("click", ()=>{
   if (gameData.coins >= gameData.moneyMultiplier.cost()) {
     gameData.coins -= gameData.moneyMultiplier.cost();
@@ -136,6 +143,8 @@ const shopUpdate = ()=>{
   gameData.container.style.backgroundColor = gameData.color.scoreBar();
   gameData.display.timeDisplay.style.top = (game.clientHeight - (game1.unitThickness/2)) + 'px';
   gameData.display.timeDisplay.style.height = (game1.unitThickness/2) + 'px';
+  gameData.display.timeBackDisplay.style.top = (game.clientHeight - (game1.unitThickness/2)) + 'px';
+  gameData.display.timeBackDisplay.style.height = (game1.unitThickness/2) + 'px';
   gameData.wallBreaker.shopColor.style.fill = gameData.color.player();
   gameData.timer.shopColor.forEach((part)=>{part.style.fill = gameData.color.player()})
   gameData.moneyMultiplier.shopColor.forEach((part)=>{part.style.fill = gameData.color.player()})

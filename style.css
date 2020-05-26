@@ -38,6 +38,16 @@ html{
     height: 10vh;
     padding: 10px;
 }
+#reset{
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: hsl(50, 100%, 60%);
+    background-color: black;
+    font-family: 'Fredoka One', cursive;
+}
 #stats{
     display: flex;
     justify-content:start;
@@ -53,10 +63,18 @@ html{
     font-size: 20px;
     padding-right: 20px;
 }
+#timer-back{
+    background-color: hsl(50, 100%, 30%);
+    width: 100%;
+    height: 10px;
+    position: absolute;
+    z-index: 1;
+}
 #timer{
     background-color: hsl(50, 100%, 60%);
     width: 100%;
     height: 10px;
+    z-index: 2;
     position: absolute;
 }
 
