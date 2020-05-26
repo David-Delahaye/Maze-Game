@@ -9,91 +9,136 @@ const {
   Events,
   Vector,
 } = Matter;
-let game = document.querySelector("#game");
-let container = document.querySelector(".container");
-let levelDisplay = document.querySelector("#level");
-let coinDisplay = document.querySelector("#coins");
-let timeDisplay = document.querySelector("#timer");
-let menu = document.querySelector(".menu");
-let menuHead = document.querySelector("#menu-head");
-let menuButton = document.querySelector("#menu-button");
-let viewWallsButton = document.querySelector("#wallBreaker");
-let viewWallsButtonColor = document.querySelector('#wallBreaker-color')
-let viewWallsButtonPressed = false;
-let timerAddButton = document.querySelector('#addTime');
-let timerAddButtonColor = document.querySelector('#addTime-color');
-let moneyAddButton = document.querySelector('#addMoney');
-let moneyAddButtonColor = document.querySelector('#addMoney-color');
-let timer = null;
-let moneyMultiplier = localStorage.getItem('moneyMultiplier') || 1;
-let timeMax = localStorage.getItem('timeMax') || 10;
-let timeLeft = timeMax;
-let level = localStorage.getItem('level') || 1;
-let coins = localStorage.getItem('coins') || 0;
-let startingSession = true;
-let active = false
+
+const gameData = {
+  startingSession:true,
+  active:false,
+  level: parseInt(localStorage.getItem('level')) || 1,
+  coins: parseInt(localStorage.getItem('coins')) || 0,
+  canvas: document.querySelector("#game"),
+  container: document.querySelector(".container"),
+  color:{
+    newHue:function(){gameData.color.gameHue =(Math.floor(Math.random()*356))},
+    gameHue:1,
+    player:function(){return `hsl( ${gameData.color.gameHue}, 70%, 40%)`},
+    goal:function(){return `hsl( ${gameData.color.gameHue+178}, 70%, 40%)`},
+    scoreBar:function(){return `hsl( ${gameData.color.gameHue}, 40%, 20%)`},
+    nub:function(){return `hsl( ${gameData.color.gameHue}, 40%, 30%)`},
+    wall:function(){return `hsl( ${gameData.color.gameHue}, 40%, 40%)`},
+    back:function(){return `hsl( ${gameData.color.gameHue}, 40%, 10%)`}
+  },
+  display:{
+    levelDisplay:document.querySelector("#level"),
+    coinDisplay:document.querySelector("#coins"),
+    timeDisplay:document.querySelector("#timer"),
+  },
+  menu:{
+    root:document.querySelector(".menu"),
+    head:document.querySelector("#menu-head"),
+    button:document.querySelector("#menu-button"),
+  },
+  timer: {
+    max:localStorage.getItem('timeMax') || 10,
+    left:this.timer.timeMax,
+    shop:document.querySelector('#addTime'),
+    shopColor:document.querySelectorAll('.addTime-color'),
+    shopPrice:document.querySelector('#addTime-cost'),
+    shopLevel:document.querySelector('#addTime-lvl'),
+    cost:function(){return 20+Math.floor((gameData.timer.max-10)*5)},
+  },
+  moneyMultiplier: {
+    value:localStorage.getItem('moneyMultiplier') || 1,
+    shop:document.querySelector('#addMoney'),
+    shopColor:document.querySelectorAll('.addMoney-color'),
+    shopPrice:document.querySelector('#addMoney-cost'),
+    shopLevel:document.querySelector('#addMoney-lvl'),
+    cost:function(){return 20*this.value},
+  },
+  wallBreaker:{
+    shop:document.querySelector("#wallBreaker"),
+    shopColor:document.querySelector('#wallBreaker-color'),
+    pressed:false,
+    cost:5,
+  }
+}
+
+
 //levelData Reset
 
-const resetData = (num)=>{
-  coins = 0;
-  level = num;
-  timeMax = 10;
-  moneyMultiplier = 1;
-  localStorage.setItem('timeMax',timeMax);
-  localStorage.setItem('moneyMultiplier',moneyMultiplier);
+const resetData = (l,c)=>{
+  gameData.coins = c;
+  gameData.level = l;
+  gameData.timer.max = 10;
+  gameData.moneyMultiplier.value = 1;
+  localStorage.setItem('timeMax',gameData.timer.max);
+  localStorage.setItem('moneyMultiplier',gameData.moneyMultiplier.value);
   update();
 }
 
 
 //SHOP ==================
 //wall viewer shop
-viewWallsButton.addEventListener("click", () => {
-  if (coins >= 5 && game1.enemies.length > 0 && viewWallsButtonPressed===false) {
+gameData.wallBreaker.shop.addEventListener("click", () => {
+  if (gameData.coins >= 5 && game1.enemies.length > 0 && gameData.wallBreaker.pressed===false) {
     for (const enemy of game1.enemies) {
       enemy.render.opacity = 0.1;
     }
     coins -= 5;
-    viewWallsButtonPressed = true;
+    gameData.wallBreaker.pressed = true;
     update();
   }
 });
 
 //add time shop
-timerAddButton.addEventListener("click", ()=>{
-  if (coins >= 20 + Math.floor((timeMax-10)*5)) {
-    timeMax++;
-    localStorage.setItem('timeMax', timeMax);
-    coins -= 20 + Math.floor((timeMax-10)*5);
-    timeLeft ++;
+gameData.timer.shop.addEventListener("click", ()=>{
+  if (gameData.coins >= gameData.timer.cost()) {
+    gameData.coins -= gameData.timer.cost();
+    gameData.timer.max++;
+    localStorage.setItem('timeMax', gameData.timer.max);
+    gameData.timer.left ++;
+    gameData.timer.shopLevel.innerHTML = gameData.timer.max-10;
+    gameData.timer.shopPrice.innerHTML = gameData.timer.cost();
     update();
   }
 })
 
-moneyAddButton.addEventListener("click", ()=>{
-  if (coins >= 20) {
-    moneyMultiplier = parseFloat(moneyMultiplier) + (1/parseFloat(moneyMultiplier));
-    localStorage.setItem('moneyMultiplier', moneyMultiplier);
-    coins -= 20;
+gameData.moneyMultiplier.shop.addEventListener("click", ()=>{
+  if (gameData.coins >= gameData.moneyMultiplier.cost()) {
+    gameData.coins -= gameData.moneyMultiplier.cost();
+    gameData.moneyMultiplier.value++;
+    localStorage.setItem('moneyMultiplier', gameData.moneyMultiplier.value);
+    gameData.moneyMultiplier.shopLevel.innerHTML = gameData.moneyMultiplier.value;
+    gameData.moneyMultiplier.shopPrice.innerHTML = gameData.moneyMultiplier.cost();
     update();
   }
 })
+
+
+
 
 //build wall
 const gameBuild = () => {
-  game1 = new Game(game, level, game.clientWidth, game.clientHeight);
+  game1 = new Game(gameData.canvas, gameData.level, game.clientWidth, game.clientHeight);
   game1.mazeBuild();
   game1.spritesBuild();
   game1.controlsBuild();
   game1.eventsBuild();
   update();
-  viewWallsButtonPressed = false;
-  document.body.style.backgroundColor = "hsl(" + game1.hue + ", 40%,20%)";
-  timeDisplay.style.top = (game.clientHeight - (game1.unitThickness/2)) + 'px'
-  timeDisplay.style.height = (game1.unitThickness/2) + 'px'
-  viewWallsButtonColor.style.fill = "hsl(" + (game1.hue) + ", 70%,40%)";
-  timerAddButtonColor.style.fill = "hsl(" + (game1.hue) + ", 70%,40%)";
-  moneyAddButtonColor.style.fill = "hsl(" + (game1.hue) +", 70%,40%)";
+  shopUpdate();
 };
+
+const shopUpdate = ()=>{
+  gameData.wallBreaker.pressed = false;
+  gameData.container.style.backgroundColor = gameData.color.scoreBar();
+  gameData.display.timeDisplay.style.top = (game.clientHeight - (game1.unitThickness/2)) + 'px';
+  gameData.display.timeDisplay.style.height = (game1.unitThickness/2) + 'px';
+  gameData.timer.shopColor.forEach((part)=>{part.style.fill = gameData.color.player})
+  gameData.moneyMultiplier.shopColor.forEach((part)=>{part.style.fill = gameData.color.player})
+  gameData.timer.shopLevel.innerHTML = gameData.timer.max-10;
+  gameData.timer.shopPrice.innerHTML = gameData.timer.cost();
+  gameData.moneyMultiplier.shopLevel.innerHTML = gameData.moneyMultiplier.value;
+  gameData.moneyMultiplier.shopPrice.innerHTML = gameData.moneyMultiplier.cost();
+}
 
 const clear = () => {
   game1.worldClear();
@@ -102,32 +147,33 @@ const clear = () => {
 //win/loss statements------------
 const win = () => {
   clearInterval(timer);
-  active = false;
-  level++
-  menu.classList.remove("hidden");
-  menuHead.textContent = "Level " + (level-1) + " Complete";
-  menuButton.textContent = "Next Level";
-  menuButton.style.backgroundColor = "hsl(" + game1.hue + ", 40%,30%)";
+  gameData.active = false;
+  gameData.menu.root.classList.remove("hidden");
+  gameData.menu.head.textContent = "Level " + gameData.level + " Complete";
+  gameData.menu.button.textContent = "Next Level";
+  gameData.menu.button.backgroundColor = gameData.color.nub();
+  gameData.level++
   update();
 };
 
 const lose = () => {
   clearInterval(timer);
-  active = false;
-  menu.classList.remove("hidden");
-  menuHead.textContent = "Level " + level + " Failed";
-  menuButton.textContent = "Retry";
-  menuButton.style.backgroundColor = "hsl(" + game1.hue + ", 40%,30%)";
+  gameData.active = false;
+  gameData.menu.root.classList.remove("hidden");
+  gameData.menu.head.textContent = "Level " + gameData.level + " Failed";
+  gameData.menu.button.textContent = "Retry";
+  gameData.menu.button.backgroundColor = gameData.color.nub();
+  update();
 }
 
 //menu button
-menuButton.addEventListener("click", () => {
-  if (startingSession){
+gameData.menu.button.addEventListener("click", () => {
+  if (gameData.startingSession){
     newLevel();
-    menu.classList.add("hidden");
-    startingSession = false;
+    gameData.menu.root.classList.add("hidden");
+    gameData.startingSession = false;
   }else{
-    menu.classList.add("hidden");
+    gameData.menu.root.classList.add("hidden");
     clear();
     newLevel();
     gameBuild();
@@ -137,9 +183,9 @@ menuButton.addEventListener("click", () => {
 //coundtown
 function startTimer(){
   timer = setInterval(()=>{
-  timeLeft--
+  gameData.timer.left -= 1;
   update();
-  if(timeLeft <= 0){
+  if(gameData.timer.left <= 0){
     lose();
   }
   },1000)
@@ -147,25 +193,26 @@ function startTimer(){
   
 //ui update
   const update = () => {
-    timeDisplay.style.width = (Math.floor(timeLeft/timeMax*100)+"%")
-    localStorage.setItem('level', level);
-    localStorage.setItem('coins', coins);
-    levelDisplay.innerHTML = "Level: " + localStorage.getItem('level', level);;
-    coinDisplay.innerHTML = "Coins: " + coins;
+    gameData.display.timeDisplay.style.width = (Math.floor(gameData.timer.left/gameData.timer.max*100)+"%")
+    localStorage.setItem('level', gameData.level);
+    localStorage.setItem('coins', gameData.coins);
+    gameData.display.levelDisplay.innerHTML = "Level: " + gameData.level;
+    gameData.display.coinDisplay.innerHTML = "Coins: " + gameData.coins;
   };
 
 //add game level data
 const newLevel = () =>{
-  active = true;
+  gameData.active = true;
   clearInterval(timer);
-  timeLeft = timeMax;
+  gameData.timer.left = gameData.timer.max;
+  gameData.color.newHue();
   startTimer();
   update();
 }
 
 const coinPickup = () => {
-  const coinValue = parseInt(Math.floor(1*Math.random()*moneyMultiplier)+1);
-  coins = parseInt(coins)+coinValue;
+  const coinValue = parseInt(Math.floor(1*Math.random()*gameData.moneyMultiplier.value)+1);
+  gameData.coins = parseInt(gameData.coins)+coinValue;
   const picked = document.createElement('div');
   document.body.appendChild(picked);
   picked.classList.add('coinFade')
