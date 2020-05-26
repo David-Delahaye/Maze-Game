@@ -368,7 +368,7 @@ function Game(root, level, width, height){
                 isSensor: true,
                 label: "enemy",
                 render: {
-                  fillStyle: "hsl(" + hue + ",40%,40%)",
+                  fillStyle: gameData.color.wall(),
                 },
               }
             );

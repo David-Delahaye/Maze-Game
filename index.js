@@ -22,7 +22,7 @@ const gameData = {
     gameHue:1,
     player:function(){return `hsl( ${gameData.color.gameHue}, 70%, 40%)`},
     goal:function(){return `hsl( ${gameData.color.gameHue+178}, 70%, 40%)`},
-    scoreBar:function(){return `hsl( ${gameData.color.gameHue}, 40%, 20%)`},
+    scoreBar:function(){return `hsl( ${gameData.color.gameHue}, 40%, 30%)`},
     nub:function(){return `hsl( ${gameData.color.gameHue}, 40%, 30%)`},
     wall:function(){return `hsl( ${gameData.color.gameHue}, 40%, 40%)`},
     back:function(){return `hsl( ${gameData.color.gameHue}, 40%, 10%)`}
@@ -31,6 +31,7 @@ const gameData = {
     levelDisplay:document.querySelector("#level"),
     coinDisplay:document.querySelector("#coins"),
     timeDisplay:document.querySelector("#timer"),
+    resetDisplay:document.querySelector('#reset')
   },
   menu:{
     root:document.querySelector(".menu"),
@@ -53,6 +54,10 @@ const gameData = {
     shopPrice:document.querySelector('#addMoney-cost'),
     shopLevel:document.querySelector('#addMoney-lvl'),
     cost:function(){return 20*this.value},
+    coinValue:function(){ const coinValue = parseInt(-Math.floor(5*Math.random())+parseInt(gameData.moneyMultiplier.value));
+                          if(coinValue >=1 && Math.sign(coinValue) === 1){
+                            return coinValue;
+                          }else{return 1}},
   },
   wallBreaker:{
     shop:document.querySelector("#wallBreaker"),
@@ -62,9 +67,10 @@ const gameData = {
   }
 }
 
-
 //levelData Reset
-
+gameData.display.resetDisplay.addEventListener('click', ()=>{
+  resetData(1,0,)
+})
 const resetData = (l,c)=>{
   gameData.coins = c;
   gameData.level = l;
@@ -96,8 +102,7 @@ gameData.timer.shop.addEventListener("click", ()=>{
     gameData.timer.max++;
     localStorage.setItem('timeMax', gameData.timer.max);
     gameData.timer.left ++;
-    gameData.timer.shopLevel.innerHTML = gameData.timer.max-10;
-    gameData.timer.shopPrice.innerHTML = gameData.timer.cost();
+    shopUpdate();
     update();
   }
 })
@@ -107,8 +112,7 @@ gameData.moneyMultiplier.shop.addEventListener("click", ()=>{
     gameData.coins -= gameData.moneyMultiplier.cost();
     gameData.moneyMultiplier.value++;
     localStorage.setItem('moneyMultiplier', gameData.moneyMultiplier.value);
-    gameData.moneyMultiplier.shopLevel.innerHTML = gameData.moneyMultiplier.value;
-    gameData.moneyMultiplier.shopPrice.innerHTML = gameData.moneyMultiplier.cost();
+    shopUpdate();
     update();
   }
 })
@@ -123,8 +127,8 @@ const gameBuild = () => {
   game1.spritesBuild();
   game1.controlsBuild();
   game1.eventsBuild();
-  update();
   shopUpdate();
+  update();
 };
 
 const shopUpdate = ()=>{
@@ -132,12 +136,17 @@ const shopUpdate = ()=>{
   gameData.container.style.backgroundColor = gameData.color.scoreBar();
   gameData.display.timeDisplay.style.top = (game.clientHeight - (game1.unitThickness/2)) + 'px';
   gameData.display.timeDisplay.style.height = (game1.unitThickness/2) + 'px';
-  gameData.timer.shopColor.forEach((part)=>{part.style.fill = gameData.color.player})
-  gameData.moneyMultiplier.shopColor.forEach((part)=>{part.style.fill = gameData.color.player})
+  gameData.wallBreaker.shopColor.style.fill = gameData.color.player();
+  gameData.timer.shopColor.forEach((part)=>{part.style.fill = gameData.color.player()})
+  gameData.moneyMultiplier.shopColor.forEach((part)=>{part.style.fill = gameData.color.player()})
   gameData.timer.shopLevel.innerHTML = gameData.timer.max-10;
   gameData.timer.shopPrice.innerHTML = gameData.timer.cost();
   gameData.moneyMultiplier.shopLevel.innerHTML = gameData.moneyMultiplier.value;
   gameData.moneyMultiplier.shopPrice.innerHTML = gameData.moneyMultiplier.cost();
+  gameData.moneyMultiplier.shopLevel.innerHTML = gameData.moneyMultiplier.value + 'x';
+  gameData.moneyMultiplier.shopPrice.innerHTML = gameData.moneyMultiplier.cost();
+  gameData.timer.shopLevel.innerHTML = '+' + (gameData.timer.max-10) + 's';
+  gameData.timer.shopPrice.innerHTML = gameData.timer.cost();
 }
 
 const clear = () => {
@@ -211,7 +220,7 @@ const newLevel = () =>{
 }
 
 const coinPickup = () => {
-  const coinValue = parseInt(Math.floor(1*Math.random()*gameData.moneyMultiplier.value)+1);
+  const coinValue = gameData.moneyMultiplier.coinValue();
   gameData.coins = parseInt(gameData.coins)+coinValue;
   const picked = document.createElement('div');
   document.body.appendChild(picked);
