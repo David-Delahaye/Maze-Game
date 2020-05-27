@@ -232,7 +232,7 @@ const coinPickup = () => {
   const coinValue = gameData.moneyMultiplier.coinValue();
   gameData.coins = parseInt(gameData.coins)+coinValue;
   const picked = document.createElement('div');
-  document.body.appendChild(picked);
+  gameData.container.appendChild(picked);
   picked.classList.add('coinFade')
   picked.innerHTML = "+ " + coinValue;
   picked.style.left = (Math.floor(game1.player.position.x) + 'px');
