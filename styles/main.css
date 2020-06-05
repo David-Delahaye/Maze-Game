@@ -1,0 +1,259 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  height: 100%;
+  font-family: 'Fredoka One', cursive;
+  letter-spacing: 2px;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  background-color: black;
+}
+
+html {
+  height: 100vh;
+  overflow: hidden;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+#game {
+  height: 90%;
+  width: 100%;
+}
+
+.container {
+  position: relative;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  max-width: 1000px;
+}
+
+#score-bar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  height: 10vh;
+  padding: 10px;
+}
+
+#reset {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: #ffdd33;
+  background-color: black;
+  font-family: 'Fredoka One', cursive;
+}
+
+#stats {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#coins {
+  color: #ffdd33;
+  font-size: 20px;
+  padding-right: 20px;
+}
+
+#level {
+  color: #ffdd33;
+  font-size: 20px;
+  padding-right: 20px;
+}
+
+#timer-back {
+  background-color: #998000;
+  width: 100%;
+  height: 10px;
+  position: absolute;
+  z-index: 1;
+}
+
+#timer {
+  background-color: #ffdd33;
+  width: 100%;
+  height: 10px;
+  z-index: 2;
+  position: absolute;
+}
+
+#shop {
+  margin-left: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.shop-item {
+  margin-left: 15px;
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+
+.shop-item-cost {
+  position: absolute;
+  color: #ffdd33;
+  padding: 2px;
+  border-radius: 1px;
+  font-size: 12px;
+  left: 0%;
+  text-align: center;
+  width: 50px;
+  bottom: -5px;
+}
+
+.shop-item-lvl {
+  position: absolute;
+  color: #ffdd33;
+  font-size: 12px;
+  padding: 2px;
+  border-radius: 1px;
+  left: -5px;
+  top: -5px;
+}
+
+#wallBreaker {
+  background-color: transparent;
+  background-position: center;
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border: none;
+}
+
+#addTime {
+  background-color: transparent;
+  background-position: center;
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  border: none;
+}
+
+#addMoney {
+  background-position: center;
+  background-size: cover;
+  background-color: transparent;
+  width: 50px;
+  height: 50px;
+  border: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.menu {
+  position: absolute;
+  font-size: 1.3em;
+  color: gold;
+  left: 10%;
+  min-height: 300px;
+  top: 20%;
+  bottom: 30%;
+  right: 10%;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.644);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  z-index: 1;
+}
+
+#menu-button {
+  margin-top: 10%;
+  padding: 5%;
+  border-radius: 5%;
+  font-family: 'Fredoka One', cursive;
+  background-color: black;
+  font-size: 1.3em;
+  letter-spacing: 2px;
+  color: #ffd900;
+}
+
+@media (max-width: 600px) {
+  #stats {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: start;
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: start;
+  }
+}
+
+.coinFade {
+  position: absolute;
+  color: gold;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  -webkit-animation: fadeOutUp ease-out 1s forwards;
+          animation: fadeOutUp ease-out 1s forwards;
+}
+
+@-webkit-keyframes fadeOutUp {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(-15px);
+            transform: translateY(-15px);
+  }
+}
+
+@keyframes fadeOutUp {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+  }
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(-15px);
+            transform: translateY(-15px);
+  }
+}
+/*# sourceMappingURL=main.css.map */
