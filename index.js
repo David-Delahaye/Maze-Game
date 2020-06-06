@@ -72,12 +72,12 @@ const gameData = {
 gameData.display.resetDisplay.addEventListener('click', ()=>{
   resetData(1,0,);
   clear();
-  newLevel();
   gameBuild();
   gameData.startingSession = true;
   gameData.menu.head.textContent = "Level 1";
   gameData.menu.button.textContent = "Begin";
 })
+
 const resetData = (l,c)=>{
   gameData.coins = c;
   gameData.level = l;
@@ -238,7 +238,7 @@ const coinPickup = () => {
   picked.style.left = (Math.floor(game1.player.position.x) + 'px');
   picked.style.top = (Math.floor(game1.player.position.y)+ 'px')
   update();
-  setTimeout(()=>{document.body.removeChild(picked)},1000) 
+  setTimeout(()=>{gameData.container.removeChild(picked)},1000) 
 };
 
 //refresh delay
