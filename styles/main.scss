@@ -20,26 +20,116 @@ html{
     padding: 0;
     box-sizing: border-box;
 }
-#game{
-    height: 90%;
-    width: 100%;
 
-}
 .container{
     position: relative;
     margin: auto;
     width: 100%;
     height: 100%;
     max-width: 1000px;
+    #game{
+        height: 90%;
+        width: 100%;
+    }
+    .menu{
+        backdrop-filter: blur(3px);
+        position: absolute;
+        font-size: 1.3em;
+        color: gold;
+        left:0;
+        min-height: 300px;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.644);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+        #menu-button{
+            margin-top: 10%;
+            padding: 5%;
+            border-radius: 5%;
+            font-family: 'Fredoka One', cursive;
+            background-color: black;
+            font-size: 1.3em;
+            letter-spacing: 2px;
+            color: hsl(51, 100%, 50%);
+        }
+    }
+    #timer-back{
+        background-color: hsl(50, 100%, 30%);
+        width: 100%;
+        height: 10px;
+        position: absolute;
+        z-index: 1;
+    }
+    #timer{
+        background-color: hsl(50, 100%, 60%);
+        width: 100%;
+        height: 10px;
+        z-index: 2;
+        position: absolute;
+    }
+    #score-bar{
+        display: flex;
+        justify-content:start;
+        align-items: center;
+        width: 100%;
+        height: 10vh;
+        padding: 10px;
+        #stats{
+            display: flex;
+            justify-content:start;
+            align-items: center;
+            #coins{
+                color:hsl(50, 100%, 60%);
+                font-size: 20px;
+                padding-right: 20px;
+            }
+            #level{
+                color: hsl(50, 100%, 60%);
+                font-size: 20px;
+                padding-right: 20px;
+            }
+        }
+        #shop{
+            margin-left: auto;
+            display: flex;
+            .shop-item{
+                margin-left: 15px;
+                width: 50px;
+                height: 50px;
+                position: relative;
+                .shop-item-cost{
+                    position: absolute;
+                    color: hsl(50, 100%, 60%);
+                    padding: 2px;
+                    border-radius: 1px;
+                    font-size: 12px;
+                    left: 0%;
+                    text-align: center;
+                    width: 50px;
+                    bottom: -5px;
+                }
+                .shop-item-lvl{
+                    position: absolute;
+                    color: hsl(50, 100%, 60%);
+                    font-size: 12px;
+                    padding: 2px;
+                    border-radius: 1px;
+                    left: -5px;
+                    top: -5px;
+                }
+            }
+        }
+    }
 }
-#score-bar{
-    display: flex;
-    justify-content:start;
-    align-items: center;
-    width: 100%;
-    height: 10vh;
-    padding: 10px;
-}
+
+
+
 #reset{
     width: 50px;
     height: 50px;
@@ -49,70 +139,6 @@ html{
     color: hsl(50, 100%, 60%);
     background-color: black;
     font-family: 'Fredoka One', cursive;
-}
-#stats{
-    display: flex;
-    justify-content:start;
-    align-items: center;
-}
-#coins{
-    color:hsl(50, 100%, 60%);
-    font-size: 20px;
-    padding-right: 20px;
-}
-#level{
-    color: hsl(50, 100%, 60%);
-    font-size: 20px;
-    padding-right: 20px;
-}
-#timer-back{
-    background-color: hsl(50, 100%, 30%);
-    width: 100%;
-    height: 10px;
-    position: absolute;
-    z-index: 1;
-}
-#timer{
-    background-color: hsl(50, 100%, 60%);
-    width: 100%;
-    height: 10px;
-    z-index: 2;
-    position: absolute;
-}
-
-#shop{
-    margin-left: auto;
-    display: flex;
-}
-
-.shop-item{
-    margin-left: 15px;
-    width: 50px;
-    height: 50px;
-    position: relative;
-}
-
-.shop-item-cost{
-    position: absolute;
-    color: hsl(50, 100%, 60%);
-    padding: 2px;
-    border-radius: 1px;
-    font-size: 12px;
-    left: 0%;
-    text-align: center;
-    width: 50px;
-    bottom: -5px;
-}
-
-.shop-item-lvl{
-    position: absolute;
-    color: hsl(50, 100%, 60%);
-    font-size: 12px;
-    padding: 2px;
-    border-radius: 1px;
-
-    left: -5px;
-    top: -5px;
 }
 
 #wallBreaker{
@@ -146,34 +172,7 @@ html{
     display: none !important;
 }
 
-.menu{
-    position: absolute;
-    font-size: 1.3em;
-    color: gold;
-    left:10%;
-    min-height: 300px;
-    top: 20%;
-    bottom: 30%;
-    right: 10%;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.644);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 1;
-}
 
-#menu-button{
-    margin-top: 10%;
-    padding: 5%;
-    border-radius: 5%;
-    font-family: 'Fredoka One', cursive;
-    background-color: black;
-    font-size: 1.3em;
-    letter-spacing: 2px;
-    color: hsl(51, 100%, 50%);
-}
 
 @media (max-width: 600px){
     #stats{
