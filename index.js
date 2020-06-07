@@ -20,12 +20,12 @@ const gameData = {
   color:{
     newHue:function(){gameData.color.gameHue =(Math.floor(Math.random()*356))},
     gameHue:1,
-    player:function(){return `hsl( ${gameData.color.gameHue}, 70%, 50%)`},
-    goal:function(){return `hsl( ${gameData.color.gameHue+178}, 70%, 50%)`},
-    scoreBar:function(){return `hsl( ${gameData.color.gameHue}, 40%, 30%)`},
-    nub:function(){return `hsl( ${gameData.color.gameHue}, 40%, 30%)`},
-    wall:function(){return `hsl( ${gameData.color.gameHue}, 40%, 40%)`},
-    back:function(){return `hsl( ${gameData.color.gameHue}, 40%, 10%)`}
+    player:function(){return `hsl( ${gameData.color.gameHue}, 60%, 50%)`},
+    goal:function(){return `hsl( ${gameData.color.gameHue+178}, 60%, 50%)`},
+    scoreBar:function(){return `hsl( ${gameData.color.gameHue}, 40%, 5%)`},
+    nub:function(){return `hsl( ${gameData.color.gameHue}, 40%, 40%)`},
+    wall:function(){return `hsl( ${gameData.color.gameHue}, 40%, 50%)`},
+    back:function(){return `hsl( ${gameData.color.gameHue}, 40%, 15%)`}
   },
   display:{
     levelDisplay:document.querySelector("#level"),
@@ -257,7 +257,6 @@ const debounce = (func, delay) => {
 // Screen Refresh & scroll stop
 const reset = () => {
   game1.worldClear();
-  newLevel();
   gameBuild();
 };
 
